@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond Faith International Church</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#050A19',    // Deep Navy Background
+                        cardDark: '#0B1221',   // Slightly lighter for cards
+                        accent: '#00B4D8',     // Cyan/Blue Highlight
+                        accentDark: '#0077B6', // Hover Blue
+                        textGray: '#94A3B8',
+                        textLight: '#E2E8F0'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    backgroundImage: {
+                        'hero-pattern': "linear-gradient(to bottom, rgba(5,10,25,0.3), rgba(5,10,25,1)), url('https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073&auto=format&fit=crop')",
+                        'kids-pattern': "linear-gradient(to top, rgba(5,10,25,0.9), transparent), url('https://images.unsplash.com/photo-1484820540004-1426a1f5999f?q=80&w=2069&auto=format&fit=crop')",
+                        'youth-pattern': "linear-gradient(to top, rgba(5,10,25,0.9), transparent), url('https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=2070&auto=format&fit=crop')",
+                        'worship-pattern': "linear-gradient(to top, rgba(5,10,25,0.9), transparent), url('https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=2070&auto=format&fit=crop')",
+                        'outreach-pattern': "linear-gradient(to top, rgba(5,10,25,0.9), transparent), url('https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2070&auto=format&fit=crop')",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Loader Styles */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background-color: #050A19;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-out;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top-color: #00B4D8;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 5000;
+            inset: 0;
+            background-color: rgba(5, 10, 25, 0.95);
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .lightbox.active { display: flex; opacity: 1; }
+        .lightbox img {
+            max-height: 90vh;
+            max-width: 90vw;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0,180,216,0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .lightbox.active img { transform: scale(1); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050A19; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00B4D8; }
+        
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #00B4D8;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after { width: 100%; }
+    </style>
+</head>
+<body class="bg-primary text-textLight font-sans antialiased overflow-x-hidden">
+
+    <div id="loader">
+        <div class="text-center">
+            <div class="spinner mx-auto mb-4"></div>
+            <h2 class="font-serif text-xl tracking-[0.3em] uppercase text-white">Beyond Faith</h2>
+        </div>
+    </div>
+
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <button class="absolute top-5 right-8 text-white text-5xl hover:text-accent transition">&times;</button>
+        <img id="lightbox-img" src="" alt="Full view" onclick="event.stopPropagation()">
+    </div>
+
+    <nav class="fixed w-full z-50 bg-primary/80 backdrop-blur-md border-b border-white/5 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 cursor-pointer" onclick="switchPage('home')">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center">
+                             <i class="fa-solid fa-church text-lg text-white"></i>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="font-serif font-bold text-lg tracking-widest leading-none text-white">BEYOND FAITH</span>
+                            <span class="text-[0.6rem] text-textGray tracking-[0.2em] uppercase">International</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex space-x-8 text-xs font-bold tracking-widest uppercase text-textGray">
+                    <a onclick="switchPage('home')" class="nav-link cursor-pointer hover:text-white transition-colors">Home</a>
+                    <a onclick="switchPage('about')" class="nav-link cursor-pointer hover:text-white transition-colors">About Us</a>
+                    <a onclick="switchPage('events')" class="nav-link cursor-pointer hover:text-white transition-colors">Events</a>
+                    <a onclick="switchPage('media')" class="nav-link cursor-pointer hover:text-white transition-colors">Media</a>
+                    <a onclick="switchPage('gallery')" class="nav-link cursor-pointer hover:text-white transition-colors">Gallery</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-4">
+                    <button class="text-yellow-500 hover:text-white transition"><i class="fa-solid fa-sun"></i></button>
+                    <button class="border border-accent text-accent px-6 py-2 rounded-full text-xs font-bold uppercase hover:bg-accent hover:text-white transition duration-300">Give Online</button>
+                </div>
+                
+                <button class="md:hidden text-white text-2xl"><i class="fa-solid fa-bars"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="min-h-screen">
+
+        <section id="home-page" class="page-section block">
+            
+            <div class="relative h-screen flex items-center justify-center bg-hero-pattern bg-cover bg-center bg-no-repeat bg-fixed">
+                <div class="text-center px-4 max-w-5xl mx-auto mt-10" data-aos="fade-up">
+                    <div class="inline-block px-4 py-1 border border-white/20 rounded-full text-[10px] tracking-[0.2em] uppercase mb-6 backdrop-blur-sm bg-white/5">Experience God's Love</div>
+                    <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-medium mb-2 leading-tight text-white">
+                        Welcome to <br> <span class="text-accent">Beyond Faith</span> International
+                    </h1>
+                    <p class="font-serif italic text-2xl md:text-3xl text-gray-300 mb-10">(Greatest Love Abode)</p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onclick="switchPage('events')" class="bg-accent text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-accentDark transition shadow-[0_0_25px_rgba(0,180,216,0.4)]">Plan Your Visit</button>
+                        <button onclick="switchPage('media')" class="border border-white/30 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-primary transition flex items-center justify-center gap-2"><i class="fa-solid fa-play"></i> Watch Online</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 -mt-24 relative z-20 pb-20">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-cardDark/95 backdrop-blur border border-white/5 p-8 rounded-xl shadow-xl hover:-translate-y-2 transition duration-300" data-aos="fade-up" data-aos-delay="0">
+                        <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center mb-4 text-accent"><i class="fa-regular fa-clock"></i></div>
+                        <h3 class="font-serif text-xl mb-1 text-white">Service Times</h3>
+                        <p class="text-textGray text-xs uppercase tracking-wide mb-4">Sundays at 9AM & 11AM<br>Wednesdays at 7PM</p>
+                    </div>
+                    <div class="bg-cardDark/95 backdrop-blur border border-white/5 p-8 rounded-xl shadow-xl hover:-translate-y-2 transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                        <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center mb-4 text-accent"><i class="fa-solid fa-location-dot"></i></div>
+                        <h3 class="font-serif text-xl mb-1 text-white">Location</h3>
+                        <p class="text-textGray text-xs uppercase tracking-wide mb-4">123 Faith Avenue<br>Spiritual District, CA</p>
+                    </div>
+                    <div class="bg-cardDark/95 backdrop-blur border border-white/5 p-8 rounded-xl shadow-xl hover:-translate-y-2 transition duration-300 group cursor-pointer" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center mb-4 text-accent"><i class="fa-regular fa-user"></i></div>
+                        <h3 class="font-serif text-xl mb-1 text-white">New Here?</h3>
+                        <p class="text-textGray text-xs uppercase tracking-wide mb-4">We'd love to meet you</p>
+                        <span class="text-accent text-xs font-bold uppercase tracking-wider group-hover:underline">Get Started &rarr;</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 py-16 flex flex-col lg:flex-row items-center gap-16">
+                <div class="w-full lg:w-1/2" data-aos="fade-right">
+                    <div class="inline-block px-3 py-1 bg-white/5 rounded-full text-[10px] text-textGray mb-4 uppercase tracking-widest">Welcome Home</div>
+                    <h2 class="font-serif text-5xl md:text-6xl text-accent mb-2">Who We Are</h2>
+                    <h3 class="font-serif text-3xl text-white mb-6">FAITH BEYOND WALLS.</h3>
+                    <p class="text-textGray leading-relaxed mb-8 text-sm">
+                        Beyond Faith International is more than just a place of worship; it is a movement of love, grace, and transformation. We believe in a God who breaks barriers and builds bridges. Whether you are just beginning your spiritual journey or have been walking with Jesus for years, you have a place here.
+                    </p>
+                    <button onclick="switchPage('about')" class="bg-accent text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-accentDark transition">Read Our Full Story</button>
+                </div>
+                <div class="w-full lg:w-1/2 relative h-[500px]" data-aos="fade-left">
+                    <div class="absolute inset-0 bg-white/5 border border-white/10 p-2 transform rotate-3 rounded-lg"></div>
+                    <img src="https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=1974&auto=format&fit=crop" class="relative z-10 w-full h-full object-cover rounded-lg shadow-2xl grayscale hover:grayscale-0 transition duration-700" alt="Worship">
+                    <div class="absolute bottom-10 left-10 z-20">
+                        <p class="font-serif text-3xl italic text-white drop-shadow-md">"Believing before you believe."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-cardDark py-20 border-y border-white/5">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="bg-[#111827] rounded-3xl p-8 md:p-12 border border-white/5 flex flex-col lg:flex-row gap-12 items-center">
+                        <div class="w-full lg:w-1/2" data-aos="zoom-in">
+                            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop" class="w-full h-[400px] object-cover rounded-xl shadow-2xl opacity-80 hover:opacity-100 transition">
+                        </div>
+                        <div class="w-full lg:w-1/2" data-aos="fade-up">
+                            <span class="text-accent text-xs font-bold uppercase tracking-widest mb-2 block">Core Philosophy</span>
+                            <h2 class="font-serif text-4xl md:text-5xl text-white mb-6 italic">Taking the limits off your faith.</h2>
+                            <p class="text-textGray mb-8 text-sm leading-relaxed">
+                                At Beyond Faith International, we believe that God isn't done writing your story. We are a multicultural, multigenerational church committed to helping people know God, find freedom, discover their purpose, and make a difference.
+                            </p>
+                            <div class="flex gap-4">
+                                <div class="bg-white/5 p-4 rounded-lg flex items-center gap-3 w-1/2">
+                                    <div class="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent"><i class="fa-solid fa-heart"></i></div>
+                                    <div>
+                                        <div class="font-bold text-white text-sm">Love God</div>
+                                        <div class="text-[10px] text-textGray">Vertical Relationship</div>
+                                    </div>
+                                </div>
+                                <div class="bg-white/5 p-4 rounded-lg flex items-center gap-3 w-1/2">
+                                    <div class="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent"><i class="fa-solid fa-users"></i></div>
+                                    <div>
+                                        <div class="font-bold text-white text-sm">Love People</div>
+                                        <div class="text-[10px] text-textGray">Horizontal Relationship</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 py-24">
+                <div class="text-center mb-12" data-aos="fade-up">
+                    <h2 class="font-serif text-4xl text-white italic">Connect With Us</h2>
+                    <p class="text-textGray text-xs mt-2 uppercase tracking-wider">There's a place for you here.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-[400px] md:h-[300px]">
+                    <div class="relative group overflow-hidden rounded-xl cursor-pointer h-full" data-aos="fade-up" data-aos-delay="0">
+                        <div class="absolute inset-0 bg-kids-pattern bg-cover bg-center transition duration-700 group-hover:scale-110"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6">
+                            <h3 class="font-serif text-2xl text-white group-hover:text-accent transition">BF Kids</h3>
+                            <div class="w-8 h-0.5 bg-accent mt-2 group-hover:w-full transition-all duration-300"></div>
+                        </div>
+                    </div>
+                    <div class="relative group overflow-hidden rounded-xl cursor-pointer h-full" data-aos="fade-up" data-aos-delay="100">
+                        <div class="absolute inset-0 bg-youth-pattern bg-cover bg-center transition duration-700 group-hover:scale-110"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6">
+                            <h3 class="font-serif text-2xl text-white group-hover:text-accent transition">Youth</h3>
+                            <div class="w-8 h-0.5 bg-accent mt-2 group-hover:w-full transition-all duration-300"></div>
+                        </div>
+                    </div>
+                     <div class="relative group overflow-hidden rounded-xl cursor-pointer h-full" data-aos="fade-up" data-aos-delay="200">
+                        <div class="absolute inset-0 bg-worship-pattern bg-cover bg-center transition duration-700 group-hover:scale-110"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6">
+                            <h3 class="font-serif text-2xl text-white group-hover:text-accent transition">Worship</h3>
+                            <div class="w-8 h-0.5 bg-accent mt-2 group-hover:w-full transition-all duration-300"></div>
+                        </div>
+                    </div>
+                     <div class="relative group overflow-hidden rounded-xl cursor-pointer h-full" data-aos="fade-up" data-aos-delay="300">
+                        <div class="absolute inset-0 bg-outreach-pattern bg-cover bg-center transition duration-700 group-hover:scale-110"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6">
+                            <h3 class="font-serif text-2xl text-white group-hover:text-accent transition">Outreach</h3>
+                            <div class="w-8 h-0.5 bg-accent mt-2 group-hover:w-full transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-[#0B1221] py-24 text-center border-t border-white/5" data-aos="fade-in">
+                <div class="inline-block px-3 py-1 border border-white/10 rounded-full text-[10px] text-textGray mb-6 uppercase tracking-widest">Daily Word</div>
+                <h2 class="font-serif text-5xl md:text-6xl text-white mb-8">Need Inspiration?</h2>
+                <div class="max-w-2xl mx-auto px-4">
+                    <p class="font-serif text-2xl text-textGray italic mb-10 leading-relaxed">
+                        "The Lord is my shepherd; I shall not want. He makes me lie down in green pastures." <br>— Psalm 23:1
+                    </p>
+                    <button class="bg-white text-primary px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-accent hover:text-white transition transform hover:scale-105">Get a verse</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="about-page" class="page-section hidden">
+            <div class="pt-32 pb-20 bg-primary">
+                <div class="text-center mb-20" data-aos="fade-down">
+                    <h1 class="font-serif text-6xl text-white mb-4">Who We Are</h1>
+                    <div class="w-16 h-1 bg-accent mx-auto rounded-full mb-6"></div>
+                    <p class="text-textGray max-w-lg mx-auto text-sm uppercase tracking-wide">Founded on faith, fueled by love, and focused on the future.</p>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6 mb-24">
+                    <div class="bg-cardDark p-10 rounded-xl border border-white/5 hover:border-accent/30 transition duration-300" data-aos="fade-up">
+                        <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent mb-6"><i class="fa-regular fa-eye"></i></div>
+                        <h3 class="font-serif text-2xl text-white mb-3">Our Vision</h3>
+                        <p class="text-textGray text-sm leading-relaxed border-l-2 border-accent pl-4">To restore priesthood and spirituality in the body of Christ through the preaching and teaching of the message of Love.</p>
+                    </div>
+                    <div class="bg-cardDark p-10 rounded-xl border border-white/5 hover:border-accent/30 transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                         <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent mb-6"><i class="fa-solid fa-flag"></i></div>
+                        <h3 class="font-serif text-2xl text-white mb-3">Our Mission</h3>
+                        <p class="text-textGray text-sm leading-relaxed border-l-2 border-accent pl-4">To bring order out of the chaotic condition of the Church as it is written in Isaiah.</p>
+                    </div>
+                     <div class="bg-cardDark p-10 rounded-xl border border-white/5 hover:border-accent/30 transition duration-300" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent mb-6"><i class="fa-regular fa-heart"></i></div>
+                        <h3 class="font-serif text-2xl text-white mb-3">Physical Mandate</h3>
+                        <ul class="text-textGray text-sm space-y-2 list-disc list-inside">
+                            <li>To share with the hungry.</li>
+                            <li>To house the homeless.</li>
+                            <li>To cover the naked.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-cardDark p-10 rounded-xl border border-white/5 hover:border-accent/30 transition duration-300" data-aos="fade-up" data-aos-delay="300">
+                         <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent mb-6"><i class="fa-solid fa-dove"></i></div>
+                        <h3 class="font-serif text-2xl text-white mb-3">Spiritual Mandate</h3>
+                        <ul class="text-textGray text-sm space-y-2 list-disc list-inside">
+                            <li>To loose the bands of wickedness.</li>
+                            <li>To undo heavy burdens.</li>
+                            <li>To let the oppressed go free.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-4 mb-24">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <div class="h-[400px] rounded-2xl overflow-hidden relative" data-aos="fade-right">
+                            <img src="https://images.unsplash.com/photo-1544983057-7977a4687563?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <div data-aos="fade-left">
+                            <span class="text-accent text-xs font-bold uppercase tracking-widest mb-2 block">Established 2013</span>
+                            <h2 class="font-serif text-4xl text-white mb-6">Our History</h2>
+                            <p class="text-textGray mb-6 text-sm leading-relaxed">
+                                Beyond Faith International Church started in a small living room with just 12 people who dared to believe God for more.
+                            </p>
+                            <p class="text-textGray text-sm leading-relaxed">
+                                What began as a weekly bible study quickly grew into a vibrant community of believers passionate about authentic worship and tangible impact.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-4 text-center">
+                    <h2 class="font-serif text-4xl text-white mb-16">Our Leadership</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="group" data-aos="fade-up">
+                            <div class="overflow-hidden rounded-lg mb-4">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop" class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">
+                            </div>
+                            <h4 class="font-serif text-xl text-white">Dr. James Sterling</h4>
+                            <span class="text-accent text-[10px] uppercase tracking-widest">Senior Pastor</span>
+                        </div>
+                         <div class="group" data-aos="fade-up" data-aos-delay="100">
+                            <div class="overflow-hidden rounded-lg mb-4">
+                                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1976&auto=format&fit=crop" class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">
+                            </div>
+                            <h4 class="font-serif text-xl text-white">Sarah Sterling</h4>
+                            <span class="text-accent text-[10px] uppercase tracking-widest">Co-Pastor & Worship</span>
+                        </div>
+                         <div class="group" data-aos="fade-up" data-aos-delay="200">
+                            <div class="overflow-hidden rounded-lg mb-4">
+                                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop" class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">
+                            </div>
+                            <h4 class="font-serif text-xl text-white">Michael Chen</h4>
+                            <span class="text-accent text-[10px] uppercase tracking-widest">Youth Pastor</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="events-page" class="page-section hidden">
+            <div class="pt-32 pb-20">
+                <div class="text-center mb-16" data-aos="fade-down">
+                    <span class="text-accent tracking-widest text-[10px] uppercase font-bold">Schedule</span>
+                    <h1 class="font-serif text-5xl md:text-6xl text-white mt-2">Upcoming Events</h1>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-4 mb-16" data-aos="fade-up">
+                    <div class="relative rounded-2xl overflow-hidden bg-cardDark border border-white/5 flex flex-col md:flex-row h-auto md:h-[500px]">
+                        <div class="w-full md:w-3/5 relative">
+                            <img src="https://images.unsplash.com/photo-1510936111840-65e151ad71bb?q=80&w=2090&auto=format&fit=crop" class="w-full h-full object-cover">
+                            <div class="absolute top-0 left-0 bg-accent text-white text-[10px] font-bold px-4 py-2 uppercase tracking-wider">Featured Event</div>
+                        </div>
+                        <div class="w-full md:w-2/5 p-12 flex flex-col justify-center">
+                            <div class="text-accent font-bold text-xs mb-2 flex items-center gap-2"><i class="fa-regular fa-calendar"></i> OCT 15</div>
+                            <h2 class="font-serif text-4xl text-white mb-4">Night of Worship</h2>
+                            <p class="text-textGray text-sm mb-8 leading-relaxed">Join us for an extended time of worship, prayer, and seeking God's presence together. This is a moment to disconnect from the world.</p>
+                            <div>
+                                <button class="border border-white/20 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-primary transition">Details & Register</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 pb-20">
+                    <div class="bg-cardDark rounded-xl overflow-hidden border border-white/5 group hover:border-accent/50 transition duration-300 cursor-pointer" onclick="switchPage('event-detail')" data-aos="fade-up">
+                        <div class="h-48 overflow-hidden relative">
+                             <span class="absolute top-3 right-3 bg-black/60 backdrop-blur px-2 py-1 text-[10px] font-bold text-white rounded uppercase">Community</span>
+                            <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        </div>
+                        <div class="p-6">
+                            <div class="text-accent text-[10px] font-bold mb-2 uppercase tracking-wide">Nov 23</div>
+                            <h3 class="font-serif text-xl text-white mb-2 group-hover:text-accent transition">Thanksgiving Outreach</h3>
+                            <p class="text-textGray text-xs mb-4">Help us distribute 500 turkey baskets to families.</p>
+                            <span class="text-[10px] font-bold text-accent uppercase tracking-widest">View Details &nearr;</span>
+                        </div>
+                    </div>
+                     <div class="bg-cardDark rounded-xl overflow-hidden border border-white/5 group hover:border-accent/50 transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                        <div class="h-48 overflow-hidden relative">
+                            <span class="absolute top-3 right-3 bg-black/60 backdrop-blur px-2 py-1 text-[10px] font-bold text-white rounded uppercase">Community</span>
+                           <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2064&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                       </div>
+                       <div class="p-6">
+                           <div class="text-accent text-[10px] font-bold mb-2 uppercase tracking-wide">Oct 28</div>
+                           <h3 class="font-serif text-xl text-white mb-2 group-hover:text-accent transition">Fall Family Festival</h3>
+                           <p class="text-textGray text-xs mb-4">Free food, games, and fun for the whole family.</p>
+                           <span class="text-[10px] font-bold text-accent uppercase tracking-widest">View Details &nearr;</span>
+                       </div>
+                   </div>
+                    <div class="bg-cardDark rounded-xl overflow-hidden border border-white/5 group hover:border-accent/50 transition duration-300" data-aos="fade-up" data-aos-delay="200">
+                        <div class="h-48 overflow-hidden relative">
+                            <span class="absolute top-3 right-3 bg-black/60 backdrop-blur px-2 py-1 text-[10px] font-bold text-white rounded uppercase">Couples</span>
+                           <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                       </div>
+                       <div class="p-6">
+                           <div class="text-accent text-[10px] font-bold mb-2 uppercase tracking-wide">Nov 05</div>
+                           <h3 class="font-serif text-xl text-white mb-2 group-hover:text-accent transition">Marriage Conference</h3>
+                           <p class="text-textGray text-xs mb-4">Invest in your relationship with this workshop.</p>
+                           <span class="text-[10px] font-bold text-accent uppercase tracking-widest">View Details &nearr;</span>
+                       </div>
+                   </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="event-detail-page" class="page-section hidden">
+            <div class="relative h-[60vh] flex items-end">
+                <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-40">
+                <div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/50 to-transparent"></div>
+                
+                <div class="relative z-10 w-full max-w-7xl mx-auto px-4 pb-12">
+                    <button onclick="switchPage('events')" class="text-textGray hover:text-white mb-6 flex items-center gap-2 text-xs uppercase tracking-widest"><i class="fa-solid fa-arrow-left"></i> Back to Events</button>
+                    <span class="bg-accent text-white px-3 py-1 text-[10px] font-bold rounded uppercase tracking-wide">Outreach</span>
+                    <h1 class="font-serif text-5xl md:text-7xl text-white mt-4 mb-2">Thanksgiving Outreach</h1>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <div class="lg:col-span-2">
+                    <h3 class="font-serif text-2xl text-white mb-6">About This Event</h3>
+                    <p class="text-textGray mb-6 leading-relaxed">Help us distribute 500 turkey baskets to families in need in our city.</p>
+                    <p class="text-textGray mb-6 leading-relaxed">Be the hands and feet of Jesus this Thanksgiving. We are packing and distributing over 500 baskets containing turkeys, sides, and pies to underprivileged families in our district. Volunteers are needed for packing (Nov 22) and distribution (Nov 23).</p>
+                    <p class="text-textGray leading-relaxed">Join us as we gather together. Everyone is welcome, so please feel free to bring friends and family.</p>
+                </div>
+                <div class="lg:col-span-1">
+                    <div class="bg-cardDark p-8 rounded-xl border border-white/5 sticky top-24">
+                        <h4 class="font-serif text-xl text-white mb-6 border-b border-white/10 pb-4">Event Details</h4>
+                        
+                        <div class="flex gap-4 mb-6">
+                            <i class="fa-regular fa-calendar text-accent text-lg mt-1"></i>
+                            <div>
+                                <div class="text-[10px] text-textGray uppercase tracking-widest">Date</div>
+                                <div class="font-bold text-white">NOV 23</div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 mb-6">
+                            <i class="fa-regular fa-clock text-accent text-lg mt-1"></i>
+                            <div>
+                                <div class="text-[10px] text-textGray uppercase tracking-widest">Time</div>
+                                <div class="font-bold text-white">8:00 AM</div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 mb-8">
+                            <i class="fa-solid fa-location-dot text-accent text-lg mt-1"></i>
+                            <div>
+                                <div class="text-[10px] text-textGray uppercase tracking-widest">Location</div>
+                                <div class="font-bold text-white">City Center</div>
+                                <div class="text-xs text-textGray">123 Faith Avenue</div>
+                            </div>
+                        </div>
+
+                        <button class="w-full bg-accent text-white py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-accentDark transition mb-3">Register Now</button>
+                        <button class="w-full bg-white/5 text-white py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition"><i class="fa-solid fa-share-nodes mr-2"></i> Share Event</button>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="media-page" class="page-section hidden">
+            <div class="pt-32 pb-10 text-center">
+                <h1 class="font-serif text-5xl md:text-6xl text-white mb-4">Media Library</h1>
+                <p class="text-textGray">Grow in your faith with our collection of sermons.</p>
+                
+                <div class="mt-10 flex justify-center gap-2">
+                    <button class="px-6 py-2 rounded-full bg-accent text-white text-[10px] font-bold uppercase tracking-widest">All</button>
+                    <button class="px-6 py-2 rounded-full bg-cardDark text-textGray hover:text-white border border-white/10 text-[10px] font-bold uppercase tracking-widest transition">Sermons</button>
+                    <button class="px-6 py-2 rounded-full bg-cardDark text-textGray hover:text-white border border-white/10 text-[10px] font-bold uppercase tracking-widest transition">Ebooks</button>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 pb-20">
+                <h3 class="text-white text-xl font-serif mb-6 flex items-center gap-2"><i class="fa-solid fa-headphones text-accent"></i> Latest Sermons</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+                     <div class="bg-cardDark rounded-xl overflow-hidden border border-white/5 hover:border-accent transition group cursor-pointer" onclick="switchPage('media-detail')">
+                        <div class="aspect-video relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=2174&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                <i class="fa-regular fa-circle-play text-5xl text-white drop-shadow-lg"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between text-[10px] text-textGray mb-2 uppercase tracking-wide">
+                                <span class="text-accent font-bold">Oct 08, 2023</span>
+                                <span>42 min</span>
+                            </div>
+                            <h3 class="font-serif text-xl text-white mb-1 group-hover:text-accent transition">Community Over Competition</h3>
+                            <p class="text-xs text-textGray">Michael Chen</p>
+                            <span class="text-[10px] text-white/50 mt-4 block">Listen Now</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-cardDark rounded-xl overflow-hidden border border-white/5 hover:border-accent transition group cursor-pointer">
+                        <div class="aspect-video relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1559851602-532729e2480e?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                             <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                <i class="fa-regular fa-circle-play text-5xl text-white drop-shadow-lg"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between text-[10px] text-textGray mb-2 uppercase tracking-wide">
+                                <span class="text-accent font-bold">Oct 01, 2023</span>
+                                <span>38 min</span>
+                            </div>
+                            <h3 class="font-serif text-xl text-white mb-1 group-hover:text-accent transition">Walking in Authority</h3>
+                            <p class="text-xs text-textGray">Sarah Sterling</p>
+                             <span class="text-[10px] text-white/50 mt-4 block">Listen Now</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-cardDark rounded-xl overflow-hidden border border-white/5 hover:border-accent transition group cursor-pointer">
+                        <div class="aspect-video relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1544640808-32ca72ac7f37?q=80&w=2135&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                             <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                <i class="fa-regular fa-circle-play text-5xl text-white drop-shadow-lg"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between text-[10px] text-textGray mb-2 uppercase tracking-wide">
+                                <span class="text-accent font-bold">Sep 24, 2023</span>
+                                <span>45 min</span>
+                            </div>
+                            <h3 class="font-serif text-xl text-white mb-1 group-hover:text-accent transition">The Power of Yes</h3>
+                            <p class="text-xs text-textGray">Dr. James Sterling</p>
+                             <span class="text-[10px] text-white/50 mt-4 block">Listen Now</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-white text-xl font-serif mb-6 flex items-center gap-2"><i class="fa-solid fa-book-open text-accent"></i> E-Books & Guides</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-cardDark p-6 rounded-xl border border-white/5 flex gap-6 items-center">
+                        <div class="w-24 h-32 bg-gray-700 flex-shrink-0 rounded bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=800&auto=format&fit=crop');"></div>
+                        <div>
+                            <h4 class="font-serif text-xl text-white">30 Days of Prayer</h4>
+                            <p class="text-textGray text-xs my-2">A daily devotional guide to help you deepen your prayer life.</p>
+                            <div class="flex items-center justify-between mt-4">
+                                <span class="text-accent text-sm font-bold">Free</span>
+                                <button class="border border-accent text-accent px-4 py-1 rounded-full text-[10px] font-bold uppercase hover:bg-accent hover:text-white transition">Get Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="bg-cardDark p-6 rounded-xl border border-white/5 flex gap-6 items-center">
+                        <div class="w-24 h-32 bg-gray-700 flex-shrink-0 rounded bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=800&auto=format&fit=crop');"></div>
+                        <div>
+                            <h4 class="font-serif text-xl text-white">Financial Freedom</h4>
+                            <p class="text-textGray text-xs my-2">Biblical principles for managing money and getting out of debt.</p>
+                             <div class="flex items-center justify-between mt-4">
+                                <span class="text-accent text-sm font-bold">$14.99</span>
+                                <button class="border border-accent text-accent px-4 py-1 rounded-full text-[10px] font-bold uppercase hover:bg-accent hover:text-white transition">Get Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="media-detail-page" class="page-section hidden">
+            <div class="pt-32 px-4 max-w-7xl mx-auto min-h-screen">
+                <button onclick="switchPage('media')" class="text-textGray hover:text-white mb-8 flex items-center gap-2 text-xs uppercase tracking-widest"><i class="fa-solid fa-arrow-left"></i> Back to Library</button>
+                
+                <div class="bg-cardDark rounded-2xl border border-white/5 overflow-hidden flex flex-col md:flex-row shadow-2xl">
+                    <div class="w-full md:w-1/3 bg-black relative min-h-[350px] flex items-center justify-center group">
+                        <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=2174&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-60">
+                         <button class="relative z-10 w-20 h-20 rounded-full bg-white/10 backdrop-blur border border-white/30 flex items-center justify-center hover:scale-110 transition group-hover:bg-white/20"><i class="fa-solid fa-play text-white text-2xl ml-1"></i></button>
+                    </div>
+                    
+                    <div class="w-full md:w-2/3 p-12">
+                        <span class="bg-white/10 text-white px-3 py-1 text-[10px] font-bold uppercase rounded-full">Audio Sermon</span>
+                        <h1 class="font-serif text-3xl md:text-5xl text-white mt-4 mb-2">Community Over Competition</h1>
+                        <div class="flex gap-6 text-textGray text-xs uppercase tracking-wide mb-8">
+                            <span><i class="fa-regular fa-user mr-1 text-accent"></i> Michael Chen</span>
+                            <span><i class="fa-regular fa-calendar mr-1 text-accent"></i> Oct 08, 2023</span>
+                            <span><i class="fa-regular fa-clock mr-1 text-accent"></i> 42 min</span>
+                        </div>
+
+                        <h4 class="font-bold text-white mb-3">Description</h4>
+                        <p class="text-textGray text-sm leading-relaxed mb-10 max-w-2xl">
+                            Why the Kingdom of God operates on unity, not rivalry. In a world that tells us we need to be better than our neighbor to succeed, the Gospel invites us into a community where your win is my win.
+                        </p>
+
+                        <div class="flex gap-4">
+                            <button class="bg-accent text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-accentDark transition flex items-center gap-2 shadow-[0_0_20px_rgba(0,180,216,0.3)]"><i class="fa-solid fa-play"></i> Play Audio</button>
+                            <button class="border border-white/20 text-textLight px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-primary transition flex items-center gap-2"><i class="fa-solid fa-download"></i> Download MP3</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery-page" class="page-section hidden">
+            <div class="text-center pt-32 pb-16">
+                <h1 class="font-serif text-5xl md:text-6xl text-white mb-4">Moments</h1>
+                <p class="text-textGray">Capturing the life, love, and community of Beyond Faith.</p>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 mb-20" data-aos="fade-up">
+                <h3 class="font-serif text-3xl text-white mb-6 flex items-baseline gap-4">Sunday Experience <span class="text-sm font-sans text-textGray font-normal italic">/ Moments of deep connection</span></h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="aspect-square relative overflow-hidden group cursor-pointer rounded-lg" onclick="openLightbox(this)">
+                        <img src="https://images.unsplash.com/photo-1576489922094-2cfe89fb1733?q=80&w=2030&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-2xl text-white"></i>
+                        </div>
+                    </div>
+                     <div class="aspect-square relative overflow-hidden group cursor-pointer rounded-lg" onclick="openLightbox(this)">
+                        <img src="https://images.unsplash.com/photo-1505243592066-d33621477754?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-2xl text-white"></i>
+                        </div>
+                    </div>
+                     <div class="aspect-square relative overflow-hidden group cursor-pointer rounded-lg" onclick="openLightbox(this)">
+                        <img src="https://images.unsplash.com/photo-1544717297-fa95b6ee9643?q=80&w=2069&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-2xl text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 mb-20" data-aos="fade-up">
+                <h3 class="font-serif text-3xl text-white mb-6 flex items-baseline gap-4">Community Life <span class="text-sm font-sans text-textGray font-normal italic">/ Doing life together</span></h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                     <div class="md:row-span-2 aspect-[1/2] relative overflow-hidden group cursor-pointer rounded-lg" onclick="openLightbox(this)">
+                        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-2xl text-white"></i>
+                        </div>
+                    </div>
+                    <div class="aspect-square relative overflow-hidden group cursor-pointer rounded-lg" onclick="openLightbox(this)">
+                        <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-2xl text-white"></i>
+                        </div>
+                    </div>
+                    <div class="aspect-square relative overflow-hidden group cursor-pointer rounded-lg" onclick="openLightbox(this)">
+                        <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-2xl text-white"></i>
+                        </div>
+                    </div>
+                    <div class="md:col-span-2 aspect-video relative overflow-hidden group cursor-pointer rounded-lg" onclick="openLightbox(this)">
+                         <img src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-2xl text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <div class="max-w-7xl mx-auto px-4 mb-20" data-aos="fade-up">
+                <h3 class="font-serif text-3xl text-white mb-6 flex items-baseline gap-4">Outreach <span class="text-sm font-sans text-textGray font-normal italic">/ Being the hands and feet</span></h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="aspect-square relative overflow-hidden group cursor-pointer rounded-lg" onclick="openLightbox(this)">
+                        <img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-2xl text-white"></i>
+                        </div>
+                    </div>
+                     <div class="aspect-square relative overflow-hidden group cursor-pointer rounded-lg" onclick="openLightbox(this)">
+                        <img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=2062&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-2xl text-white"></i>
+                        </div>
+                    </div>
+                     <div class="aspect-square relative overflow-hidden group cursor-pointer rounded-lg" onclick="openLightbox(this)">
+                        <img src="https://images.unsplash.com/photo-1519068737630-e5db1b71af17?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-2xl text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-black py-16 border-t border-white/5 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12 text-sm">
+            
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 border border-white/20 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-church text-white"></i>
+                   </div>
+                    <div class="flex flex-col">
+                        <span class="font-serif font-bold text-base tracking-widest leading-none text-white">BEYOND FAITH</span>
+                        <span class="text-[0.5rem] text-textGray tracking-[0.2em] uppercase">International</span>
+                    </div>
+                </div>
+                <p class="text-textGray leading-relaxed mt-2 text-xs">A place to believe, belong, and become who God created you to be.</p>
+            </div>
+
+            <div>
+                <h4 class="font-serif font-bold text-white mb-6">Quick Links</h4>
+                <ul class="space-y-3 text-textGray text-xs uppercase tracking-wide">
+                    <li><a onclick="switchPage('about')" class="cursor-pointer hover:text-accent transition">Our Story</a></li>
+                    <li><a class="cursor-pointer hover:text-accent transition">Ministries</a></li>
+                    <li><a onclick="switchPage('events')" class="cursor-pointer hover:text-accent transition">Events</a></li>
+                    <li><a onclick="switchPage('media')" class="cursor-pointer hover:text-accent transition">Media</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-serif font-bold text-white mb-6">Service Times</h4>
+                <ul class="space-y-4 text-xs">
+                    <li class="flex justify-between text-textGray border-b border-white/5 pb-2"><span>Sunday Morning</span> <span class="text-accent font-bold">09:00 AM</span></li>
+                    <li class="flex justify-between text-textGray border-b border-white/5 pb-2"><span>Sunday Late</span> <span class="text-accent font-bold">11:00 AM</span></li>
+                    <li class="flex justify-between text-textGray border-b border-white/5 pb-2"><span>Wednesday</span> <span class="text-accent font-bold">07:00 PM</span></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-serif font-bold text-white mb-6">Contact</h4>
+                <ul class="space-y-4 text-textGray text-xs">
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-location-dot text-accent"></i> 123 Faith Avenue, CA 90210</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-phone text-accent"></i> +1 (555) 123-4567</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-envelope text-accent"></i> hello@beyondfaith.org</li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-[10px] text-textGray uppercase tracking-widest">
+            <span>&copy; 2025 Beyond Faith International.</span>
+            <div class="space-x-6 mt-4 md:mt-0">
+                <a href="#" class="hover:text-white">Privacy Policy</a>
+                <a href="#" class="hover:text-white">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        // Initialize Animations
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 30,
+            easing: 'ease-out-cubic'
+        });
+
+        // Page Loader
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    // Trigger animations for elements above the fold specifically
+                    AOS.refresh(); 
+                }, 500);
+            }, 800);
+        });
+
+        // View Switcher (SPA Logic)
+        function switchPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page-section');
+            pages.forEach(page => {
+                page.classList.add('hidden');
+                page.classList.remove('block');
+            });
+
+            // Handle suffix logic
+            let targetId = pageId.endsWith('-page') ? pageId : pageId + '-page';
+            const targetPage = document.getElementById(targetId);
+            
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                targetPage.classList.add('block');
+                
+                // Reset scroll
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Refresh animations
+                setTimeout(() => AOS.refresh(), 100);
+            }
+        }
+
+        // Lightbox Logic
+        function openLightbox(element) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const src = element.querySelector('img').src;
+            
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close on escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") closeLightbox();
+        });
+
+        // Initial Load
+        switchPage('home');
+    </script>
+</body>
+</html>
