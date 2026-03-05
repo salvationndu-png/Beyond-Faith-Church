@@ -126,7 +126,7 @@
     <nav class="fixed w-full z-50 bg-primary/80 backdrop-blur-md border-b border-white/5 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <div class="flex-shrink-0 cursor-pointer" onclick="switchPage('home')">
+                <a href="{{url('/')}}" class="flex-shrink-0">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center">
                              <i class="fa-solid fa-church text-lg text-white"></i>
@@ -136,14 +136,14 @@
                             <span class="text-[0.6rem] text-textGray tracking-[0.2em] uppercase">International</span>
                         </div>
                     </div>
-                </div>
+                </a>
                 
                 <div class="hidden md:flex space-x-8 text-xs font-bold tracking-widest uppercase text-textGray">
-                    <a href="{{url('/')}}" class="nav-link cursor-pointer hover:text-white transition-colors">Home</a>
-                    <a href="{{url('/#about-page')}}" class="nav-link cursor-pointer hover:text-white transition-colors">About Us</a>
-                    <a href="{{url('/#events-page')}}" class="nav-link cursor-pointer hover:text-white transition-colors">Events</a>
-                    <a href="{{url('/#media-page')}}" class="nav-link cursor-pointer hover:text-white transition-colors">Media</a>
-                    <a href="{{url('/#gallery-page')}}" class="nav-link cursor-pointer hover:text-white transition-colors">Gallery</a>
+                    <a href="{{url('/')}}" class="nav-link hover:text-white transition-colors">Home</a>
+                    <a href="{{url('/')}}#about-page" class="nav-link hover:text-white transition-colors">About Us</a>
+                    <a href="{{url('/')}}#events-page" class="nav-link hover:text-white transition-colors">Events</a>
+                    <a href="{{url('/')}}#media-page" class="nav-link hover:text-white transition-colors">Media</a>
+                    <a href="{{url('/')}}#gallery-page" class="nav-link hover:text-white transition-colors">Gallery</a>
                 </div>
 
                 <div class="hidden md:flex items-center gap-4">
@@ -164,11 +164,11 @@
         </button>
 
         <div class="flex flex-col gap-8 text-center">
-            <a href="{{url('/')}}"  class="text-2xl font-serif text-white hover:text-accent transition">Home</a>
-            <a href="{{url('/#about-page')}}"  class="text-2xl font-serif text-white hover:text-accent transition">About Us</a>
-            <a href="{{url('/#events-page')}}"  class="text-2xl font-serif text-white hover:text-accent transition">Events</a>
-            <a href="{{url('/#media-page')}}"  class="text-2xl font-serif text-white hover:text-accent transition">Media</a>
-            <a href="{{url('/#gallery-page')}}"  class="text-2xl font-serif text-white hover:text-accent transition">Gallery</a>
+            <a href="{{url('/')}}" class="text-2xl font-serif text-white hover:text-accent transition">Home</a>
+            <a href="{{url('/')}}#about-page" class="text-2xl font-serif text-white hover:text-accent transition">About Us</a>
+            <a href="{{url('/')}}#events-page" class="text-2xl font-serif text-white hover:text-accent transition">Events</a>
+            <a href="{{url('/')}}#media-page" class="text-2xl font-serif text-white hover:text-accent transition">Media</a>
+            <a href="{{url('/')}}#gallery-page" class="text-2xl font-serif text-white hover:text-accent transition">Gallery</a>
         </div>
 
         <div class="mt-auto mb-12 border-t border-white/10 pt-8 flex flex-col gap-6 items-center">
@@ -186,7 +186,7 @@
     <div class="pt-28 px-4 max-w-7xl mx-auto min-h-screen">
 
         <!-- Back button -->
-        <a href="{{url('/#media-page')}}"
+        <a href="{{url('/')}}#media-page"
             class="text-textGray hover:text-white mb-6 flex items-center gap-2
                    text-xs uppercase tracking-widest">
             <i class="fa-solid fa-arrow-left"></i> Back to Library
@@ -233,14 +233,31 @@
                 </h1>
 
                 <!-- Meta info -->
-                <div
-                    class="flex flex-wrap gap-x-4 gap-y-2
-                           text-textGray text-[11px]
-                           uppercase tracking-wide mb-6">
-
-                    <span><i class="fa-regular fa-user mr-1 text-accent"></i> Pastor Livinus Nneji</span>
-                    <span><i class="fa-regular fa-calendar mr-1 text-accent"></i>{{$data->created_at->format('d M Y, H:i')}}</span>
-                    <span><i class="fa-regular fa-clock mr-1 text-accent"></i> 42 min</span>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 p-4 bg-primary/50 rounded-lg border border-white/5">
+                    <div class="text-center">
+                        <i class="fa-regular fa-user text-accent text-xl mb-2 block"></i>
+                        <div class="text-white text-sm font-bold">Pastor Livinus Nneji</div>
+                        <div class="text-textGray text-xs">Speaker</div>
+                    </div>
+                    <div class="text-center">
+                        <i class="fa-regular fa-calendar text-accent text-xl mb-2 block"></i>
+                        <div class="text-white text-sm font-bold">{{$data->created_at->format('M d, Y')}}</div>
+                        <div class="text-textGray text-xs">Date</div>
+                    </div>
+                    @if($data->audio_length)
+                    <div class="text-center">
+                        <i class="fa-regular fa-clock text-accent text-xl mb-2 block"></i>
+                        <div class="text-white text-sm font-bold">{{$data->audio_length}}</div>
+                        <div class="text-textGray text-xs">Duration</div>
+                    </div>
+                    @endif
+                    @if($data->file_size)
+                    <div class="text-center">
+                        <i class="fa-solid fa-file-audio text-accent text-xl mb-2 block"></i>
+                        <div class="text-white text-sm font-bold">{{$data->file_size}}</div>
+                        <div class="text-textGray text-xs">File Size</div>
+                    </div>
+                    @endif
                 </div>
 
                 <h4 class="font-bold text-white mb-2 text-sm">Description</h4>

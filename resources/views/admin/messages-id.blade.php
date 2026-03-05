@@ -322,7 +322,7 @@
                           required
                         >{{$data->message}}</textarea>
                       </div>
-                      <button class="btn btn-outline-primary" type="submit" >Save</button>
+                      <button class="btn btn-outline-primary" type="submit" onclick="if(this.form.checkValidity()){this.disabled=true; this.innerHTML='Updating...'; this.form.submit();}">Save</button>
 
                     </div>
                   </div>

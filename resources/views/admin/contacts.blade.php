@@ -60,78 +60,7 @@
       <div class="layout-container">
         <!-- Menu -->
 
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-          <div class="app-brand demo">
-            <a href="index.html" class="app-brand-link">
-              <span class="app-brand-logo demo">
-             <h3  >BEYOND FAITH</h2>
-              </span>
-            </a>
-
-            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-              <i class="bx bx-chevron-left bx-sm align-middle"></i>
-            </a>
-          </div>
-
-          <div class="menu-inner-shadow"></div>
-
-          <ul class="menu-inner py-1">
-            <!-- Dashboard -->
-            <li class="menu-item active">
-              <a href="{{url('home')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                <div data-i18n="Analytics">Dashboard</div>
-              </a>
-            </li>
-
-            <!-- Components -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">Pages</span></li>
-            <!-- Cards -->
-            <li class="menu-item">
-              <a href="{{url('events')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Basic">Events</div>
-              </a>
-            </li>
-            <!-- User interface -->
-            <li class="menu-item">
-              <a href="{{url('messages')}}" class="menu-link ">
-                <i class="menu-icon tf-icons bx bx-box"></i>
-                <div data-i18n="User interface">Messages</div>
-              </a>
-             
-            </li>
-
-            <!-- Extended components -->
-            <li class="menu-item">
-              <a href="{{url('admingallery')}}" class="menu-link ">
-                <i class="menu-icon tf-icons bx bx-copy"></i>
-                <div data-i18n="Extended UI">Gallery</div>
-              </a>
-             
-            </li>
-
-            <li class="menu-item">
-              <a href="{{url('ebooksource')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-crown"></i>
-                <div data-i18n="Boxicons">Ebooks</div>
-              </a>
-            </li>
-
-            <!-- Forms & Tables -->
-          
-            <!-- Tables -->
-            <li class="menu-item">
-              <a href="{{url('contacts')}}" class="menu-link">
-              <i class=' menu-icon bx bxs-inbox'></i>           
-                   <div data-i18n="Tables">Contacts</div>
-              </a>
-            </li>
-            <!-- Misc -->
-           
-          </ul>
-        </aside>
-        <!-- / Menu -->
+        @include('admin.partials.sidebar')
 
         <!-- Layout container -->
         <div class="layout-page">
@@ -240,6 +169,55 @@
           <!-- Content wrapper -->
         <div class="content-wrapper">
             <!-- Content -->
+            <div class="container-xxl flex-grow-1 container-p-y">
+              @include('admin.partials.breadcrumbs')
+              @include('admin.partials.ui-components')
+              
+              <div class="card">
+                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+                  <h5 class="mb-0">All Contacts</h5>
+                  <form method="GET" class="d-flex gap-2">
+                    <input type="text" name="search" class="form-control form-control-sm" placeholder="Search..." value="{{ request('search') }}" style="min-width: 200px;">
+                    <button type="submit" class="btn btn-sm btn-primary"><i class="bx bx-search"></i></button>
+                    @if(request('search'))
+                      <a href="{{ url('contacts') }}" class="btn btn-sm btn-secondary"><i class="bx bx-x"></i></a>
+                    @endif
+                  </form>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th><a href="?sort=name&order={{ request('sort') == 'name' && request('order') == 'asc' ? 'desc' : 'asc' }}{{ request('search') ? '&search='.request('search') : '' }}" class="text-decoration-none text-dark">Name @if(request('sort') == 'name')<i class="bx bx-{{ request('order') == 'asc' ? 'up' : 'down' }}-arrow"></i>@endif</a></th>
+                          <th class="d-none d-md-table-cell"><a href="?sort=email&order={{ request('sort') == 'email' && request('order') == 'asc' ? 'desc' : 'asc' }}{{ request('search') ? '&search='.request('search') : '' }}" class="text-decoration-none text-dark">Email @if(request('sort') == 'email')<i class="bx bx-{{ request('order') == 'asc' ? 'up' : 'down' }}-arrow"></i>@endif</a></th>
+                          <th class="d-none d-lg-table-cell">Message</th>
+                          <th><a href="?sort=created_at&order={{ request('sort') == 'created_at' && request('order') == 'asc' ? 'desc' : 'asc' }}{{ request('search') ? '&search='.request('search') : '' }}" class="text-decoration-none text-dark">Date @if(request('sort') == 'created_at' || !request('sort'))<i class="bx bx-{{ request('order') == 'asc' ? 'up' : 'down' }}-arrow"></i>@endif</a></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @forelse($data as $contact)
+                          <tr>
+                            <td><div class="fw-semibold">{{ $contact->name }}</div><small class="text-muted d-md-none">{{ $contact->email }}</small></td>
+                            <td class="d-none d-md-table-cell">{{ $contact->email }}</td>
+                            <td class="d-none d-lg-table-cell">{{ Str::limit($contact->message, 60) }}</td>
+                            <td><small>{{ $contact->created_at->format('M d, Y') }}</small><div class="d-lg-none"><small class="text-muted">{{ Str::limit($contact->message, 40) }}</small></div></td>
+                          </tr>
+                        @empty
+                          <tr><td colspan="4" class="text-center text-muted py-4">@if(request('search'))No contacts found matching "{{ request('search') }}"@else No contacts yet @endif</td></tr>
+                        @endforelse
+                      </tbody>
+                    </table>
+                  </div>
+                  @if($data->hasPages())
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 gap-2">
+                      <div class="text-muted small">Showing {{ $data->firstItem() }} to {{ $data->lastItem() }} of {{ $data->total() }} contacts</div>
+                      <nav>{{ $data->links('pagination::bootstrap-4') }}</nav>
+                    </div>
+                  @endif
+                </div>
+              </div>
+            </div>
 
 
 

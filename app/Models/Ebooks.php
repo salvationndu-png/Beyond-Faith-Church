@@ -16,5 +16,13 @@ class Ebooks extends Model
         'images',
         'pdf',
         'price',
+        'original_price',
+        'is_on_sale',
+        'pages',
+        'file_size',
+        'category',
+        'rating',
+        'reviews_count',
+        'downloads_count',
     ];
 }

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Http;
 use App\Models\Payments;
 use App\Models\Events;
 use App\Models\Ebooks;
+use App\Models\Contacts;
 use App\Models\Messages;
 use App\Models\GalleryItem;
 use Illuminate\Http\Request;
@@ -20,26 +21,50 @@ class HomeController extends Controller
 {
     
     
-    public function redirect()
+    public function redirect(Request $request)
     {
       if(Auth::id())
       {
           if (Auth::user()->usertype=='0')
            {
-            // $course= Courses::latest()->take(3)->get();
-            // $data= Announcements::latest()->get();
-            // $events= Events::latest()->take(3)->get();
               return view('user.user_dashboard');
           }
           else {
-            // $user=User::all(); 
-              return view('admin.home');
+              $totalEvents = Events::count();
+              $totalEbooks = Ebooks::count();
+              $totalMessages = Messages::count();
+              $totalContacts = Contacts::count();
+              $totalGalleries = GalleryItem::distinct('header')->count('header');
+              
+              $recentEvents = Events::latest()->take(5)->get();
+              $recentMessages = Messages::latest()->take(5)->get();
+              
+              $query = Contacts::query();
+              
+              if ($request->search) {
+                  $query->where(function($q) use ($request) {
+                      $q->where('name', 'like', '%'.$request->search.'%')
+                        ->orWhere('email', 'like', '%'.$request->search.'%')
+                        ->orWhere('message', 'like', '%'.$request->search.'%');
+                  });
+              }
+              
+              $sortBy = $request->get('sort', 'created_at');
+              $sortOrder = $request->get('order', 'desc');
+              $query->orderBy($sortBy, $sortOrder);
+              
+              $recentContacts = $query->paginate(10)->withQueryString();
+              
+              return view('admin.home', compact(
+                  'totalEvents', 'totalEbooks', 'totalMessages', 'totalContacts', 'totalGalleries',
+                  'recentEvents', 'recentMessages', 'recentContacts'
+              ));
           }
       }
       else {
          return redirect()->back();
       }
-      }
+    }
    
     
     
@@ -56,11 +81,22 @@ class HomeController extends Controller
     
     
     
-    public function index()
+    public function index(Request $request)
     {
       $events= Events::all();
-      $messages= Messages::all();
-      $ebooks= Ebooks::all();
+      
+      $messagesQuery = Messages::query();
+      if ($request->has('search_sermons')) {
+          $messagesQuery->where('header', 'like', '%' . $request->search_sermons . '%');
+      }
+      $messages = $messagesQuery->paginate(6)->appends(['search_sermons' => $request->search_sermons]);
+      
+      $ebooksQuery = Ebooks::query();
+      if ($request->has('search_ebooks')) {
+          $ebooksQuery->where('header', 'like', '%' . $request->search_ebooks . '%');
+      }
+      $ebooks = $ebooksQuery->paginate(6)->appends(['search_ebooks' => $request->search_ebooks]);
+      
       $gallery= GalleryItem::all();
      return view('user.home', compact('events','gallery','messages','ebooks'));
     }

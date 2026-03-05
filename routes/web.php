@@ -56,7 +56,7 @@ Route::get('/event_id/{id}', [AdminController::class, 'event_id']);
 Route::get('/message_id/{id}', [AdminController::class, 'message_id']);
 Route::get('/audio_id/{id}', [AdminController::class, 'audio_id']);
 
-Route::get('/getEbook/{id}', [AdminController::class, 'getEbook'])->name('ebooks.show');
+Route::get('/ebook/{encrypted}', [AdminController::class, 'getEbook'])->name('ebooks.show');
 
 Route::post('/events_id_upload/{id}', [AdminController::class, 'events_id_upload']);
 Route::post('/gallery_id_upload/{id}', [AdminController::class, 'gallery_id_upload']);
@@ -77,16 +77,19 @@ Route::get('/eventid/{id}', [HomeController::class, 'eventid']);
 
 
 
-Route::get('/ebooks/pay/{ebook}', [EbookPaymentController::class, 'pay'])
-    ->name('ebooks.pay');
+Route::middleware(['throttle:20,1'])->group(function () {
+    Route::get('/ebook/{encrypted}/pay', [EbookPaymentController::class, 'pay'])
+        ->name('ebooks.pay');
 
-Route::get('/ebooks/callback/{ebook}', [EbookPaymentController::class, 'callback'])
-    ->name('ebooks.callback');
+    Route::get('/ebook/{encrypted}/callback', [EbookPaymentController::class, 'callback'])
+        ->name('ebooks.callback');
+
+    Route::get('/ebook/{encrypted}/download', [EbookPaymentController::class, 'download'])
+        ->middleware('signed')
+        ->name('ebooks.download');
+});
 
 Route::post('/paystack/webhook', [EbookPaymentController::class, 'handle']);
-
-Route::get('/ebooks/download/{ebook}', [EbookPaymentController::class, 'download'])
-    ->name('ebooks.download');
 
 
 

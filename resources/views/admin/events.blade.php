@@ -60,77 +60,7 @@
       <div class="layout-container">
         <!-- Menu -->
 
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-          <div class="app-brand demo">
-            <a href="index.html" class="app-brand-link">
-              <span class="app-brand-logo demo">
-             <h3  >BEYOND FAITH</h2>
-              </span>
-            </a>
-
-            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-              <i class="bx bx-chevron-left bx-sm align-middle"></i>
-            </a>
-          </div>
-
-          <div class="menu-inner-shadow"></div>
-
-          <ul class="menu-inner py-1">
-            <!-- Dashboard -->
-            <li class="menu-item ">
-              <a href="{{url('home')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                <div data-i18n="Analytics">Dashboard</div>
-              </a>
-            </li>
-
-            <!-- Components -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">Pages</span></li>
-            <!-- Cards -->
-            <li class="menu-item active">
-              <a href="{{url('events')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Basic">Events</div>
-              </a>
-            </li>
-            <!-- User interface -->
-            <li class="menu-item">
-              <a href="{{url('messages')}}" class="menu-link ">
-                <i class="menu-icon tf-icons bx bx-box"></i>
-                <div data-i18n="User interface">Messages</div>
-              </a>
-             
-            </li>
-
-            <!-- Extended components -->
-            <li class="menu-item">
-              <a href="{{url('admingallery')}}" class="menu-link ">
-                <i class="menu-icon tf-icons bx bx-copy"></i>
-                <div data-i18n="Extended UI">Gallery</div>
-              </a>
-             
-            </li>
-            <li class="menu-item">
-              <a href="{{url('ebooksource')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-crown"></i>
-                <div data-i18n="Boxicons">Ebooks</div>
-              </a>
-            </li>
-
-            <!-- Forms & Tables -->
-          
-            <!-- Tables -->
-            <li class="menu-item">
-              <a href="{{url('contacts')}}" class="menu-link">
-              <i class=' menu-icon bx bxs-inbox'></i>           
-                   <div data-i18n="Tables">Contacts</div>
-              </a>
-            </li>
-            <!-- Misc -->
-           
-          </ul>
-        </aside>
-        <!-- / Menu -->
+        @include('admin.partials.sidebar')
 
         <!-- Layout container -->
         <div class="layout-page">
@@ -239,6 +169,9 @@
           <!-- Content wrapper -->
           <div class="content-wrapper p-4">
             <!-- Content -->
+            @include('admin.partials.breadcrumbs')
+            @include('admin.partials.ui-components')
+            
                          @if(session()->has('message'))
                             <div
                                 class="alert alert-danger alert-dismissible fade show"
@@ -265,11 +198,20 @@
 
             <div class="row">
                 <div class="col-12">
-                  <form action="{{url('events_upload')}}" enctype="multipart/form-data" method="post">
+                  <form action="{{url('events_upload')}}" enctype="multipart/form-data" method="post" id="eventForm">
                     @csrf
                   <div class="card">
                     <h5 class="card-header">EVENT FORM</h5>
                     <div class="card-body demo-vertical-spacing demo-only-element">
+                      @if($errors->any())
+                        <div class="alert alert-danger alert-dismissible">
+                          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                          @foreach($errors->all() as $error)
+                            <div><i class="bx bx-error-circle"></i> {{ $error }}</div>
+                          @endforeach
+                        </div>
+                      @endif
+                      
                       <div class="input-group">
                         <label class="input-group-text" for="inputGroupFile01">Header</label>
                         <input type="input" class="form-control" name="header" id="inputGroupFile01" required />
@@ -286,42 +228,28 @@
 
                       <div class="input-group">
                         <label class="btn btn-outline-primary" type="button" id="inputGroupFileAddon03">Time</label>
-                        <input
-                          type="time"
-                          class="form-control"
-                          id="inputGroupFile03"
-                          aria-describedby="inputGroupFileAddon03"
-                          aria-label="Upload"
-                          name="time"
-                          required
-                        />
+                        <input type="time" class="form-control" id="inputGroupFile03" name="time" required />
                       </div>
+                      
                       <div class="input-group">
-                        <label class="btn btn-outline-primary" type="button" id="inputGroupFileAddon03">Image</label>
-                        <input
-                          type="file"
-                          class="form-control"
-                          id="inputGroupFile03"
-                          aria-describedby="inputGroupFileAddon03"
-                          aria-label="Upload"
-                          name="image"
-                          required
-                        />
+                        <label class="btn btn-outline-primary">Image</label>
+                        <input type="file" class="form-control" id="eventImage" name="image" accept="image/jpeg,image/jpg,image/png,image/webp" required />
+                      </div>
+                      <div id="eventImagePreview" class="mt-2" style="display:none;">
+                        <img id="eventPreviewImg" style="max-width:200px; max-height:200px; border-radius:8px; border:2px solid #ddd;" />
                       </div>
 
                       <div class="input-group">
-                        <textarea
-                          type="text"
-                          class="form-control"
-                          id="inputGroupFile04"
-                          placeholder="Write Up"
-                          aria-describedby="inputGroupFileAddon04"
-                          aria-label="Upload"
-                          name="writeup"
-                          required
-                        ></textarea>
+                        <textarea type="text" class="form-control" id="inputGroupFile04" placeholder="Write Up" name="writeup" required></textarea>
                       </div>
-                      <button class="btn btn-outline-primary" type="submit" >Save</button>
+                      
+                      <div id="uploadProgress" style="display:none;" class="mt-3">
+                        <div class="progress">
+                          <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%">0%</div>
+                        </div>
+                      </div>
+                      
+                      <button class="btn btn-church-primary" type="submit" id="submitBtn">Save</button>
 
                     </div>
                   </div>
@@ -329,58 +257,125 @@
                 </div>
               </div>
 
+<script>
+const eventImage = document.getElementById('eventImage');
+const eventPreview = document.getElementById('eventImagePreview');
+const eventPreviewImg = document.getElementById('eventPreviewImg');
+const eventForm = document.getElementById('eventForm');
+const submitBtn = document.getElementById('submitBtn');
+const progressBar = document.getElementById('progressBar');
+const uploadProgress = document.getElementById('uploadProgress');
+
+eventImage.addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      eventPreviewImg.src = e.target.result;
+      eventPreview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+eventForm.addEventListener('submit', function(e) {
+  if (!this.checkValidity()) return;
+  e.preventDefault();
+  
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Uploading...';
+  uploadProgress.style.display = 'block';
+  
+  const formData = new FormData(this);
+  const xhr = new XMLHttpRequest();
+  
+  xhr.upload.addEventListener('progress', function(e) {
+    if (e.lengthComputable) {
+      const percent = Math.round((e.loaded / e.total) * 100);
+      progressBar.style.width = percent + '%';
+      progressBar.textContent = percent + '%';
+    }
+  });
+  
+  xhr.addEventListener('load', function() {
+    if (xhr.status === 200) {
+      window.location.reload();
+    } else {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Save';
+      uploadProgress.style.display = 'none';
+      alert('Upload failed. Please try again.');
+    }
+  });
+  
+  xhr.addEventListener('error', function() {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Save';
+    uploadProgress.style.display = 'none';
+    alert('Upload failed. Please check your connection.');
+  });
+  
+  xhr.open('POST', '{{url("events_upload")}}');
+  xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('input[name="_token"]').value);
+  xhr.send(formData);
+});
+</script>
+
               <div style="margin-top:7vh;" class="card">
-                <h5 class="card-header">Table Basic</h5>
+                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+                  <h5 class="mb-0">All Events</h5>
+                  <form method="GET" class="d-flex gap-2">
+                    <input type="text" name="search" class="form-control form-control-sm" placeholder="Search events..." value="{{ request('search') }}" style="min-width: 200px;">
+                    <button type="submit" class="btn btn-sm btn-primary"><i class="bx bx-search"></i></button>
+                    @if(request('search'))
+                      <a href="{{ url('events') }}" class="btn btn-sm btn-secondary"><i class="bx bx-x"></i></a>
+                    @endif
+                  </form>
+                </div>
                 <div class="table-responsive text-nowrap">
-                  <table class="table">
+                  <table class="table table-hover">
                     <thead>
                       <tr>
-                        <th>Header</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Location</th>
-                        <th>Image</th>
+                        <th><a href="?sort=header&order={{ request('sort') == 'header' && request('order') == 'asc' ? 'desc' : 'asc' }}{{ request('search') ? '&search='.request('search') : '' }}" class="text-decoration-none text-dark">Header @if(request('sort') == 'header')<i class="bx bx-{{ request('order') == 'asc' ? 'up' : 'down' }}-arrow"></i>@endif</a></th>
+                        <th><a href="?sort=date&order={{ request('sort') == 'date' && request('order') == 'asc' ? 'desc' : 'asc' }}{{ request('search') ? '&search='.request('search') : '' }}" class="text-decoration-none text-dark">Date @if(request('sort') == 'date')<i class="bx bx-{{ request('order') == 'asc' ? 'up' : 'down' }}-arrow"></i>@endif</a></th>
+                        <th class="d-none d-md-table-cell">Time</th>
+                        <th class="d-none d-lg-table-cell">Location</th>
+                        <th class="d-none d-xl-table-cell">Image</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                     
-                      @foreach($data as $data)
+                      @forelse($data as $event)
                       <tr>
-                        <td><i class="fab fa-react fa-lg text-info me-3"></i> <strong>{{$data->header}}</strong></td>
-                        <td>{{$data->date}}</td>
-                        <td>
-                        {{$data->time}}
-                        </td>
-                        <td><span class="badge bg-label-success me-1">{{$data->location}}</span></td>
-                        <td>
-                          <img
-                          style="border-radius:50%; width:10vw;"
-                            src="/images/{{$data->image}}"
-                            class="img-fluid"
-                            alt="image desc"
-                          />
-                       
-                        
-                    
-                        </td>
+                        <td><strong>{{$event->header}}</strong><div class="d-md-none small text-muted">{{$event->date}} at {{$event->time}}</div></td>
+                        <td>{{$event->date}}</td>
+                        <td class="d-none d-md-table-cell">{{$event->time}}</td>
+                        <td class="d-none d-lg-table-cell"><span class="badge bg-label-success">{{$event->location}}</span></td>
+                        <td class="d-none d-xl-table-cell"><img style="border-radius:50%; width:50px; height:50px; object-fit:cover;" src="/images/{{$event->image}}" alt="image"/></td>
                         <td>
                           <div class="dropdown">
-                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                              <i class="bx bx-dots-vertical-rounded"></i>
-                            </button>
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                             <div class="dropdown-menu">
-                              <a class="dropdown-item" href="{{ url('/event_id', $data->id) }}"><i class="bx bx-edit-alt me-2"></i> Edit</a>
-                              <a class="dropdown-item"  onclick="return confirm('Are you sure you want to delete this ?');" href="{{ url('delete_event', $data->id) }}"><i class="bx bx-trash me-2"></i> Delete</a>
+                              <a class="dropdown-item" href="{{ url('/event_id', $event->id) }}"><i class="bx bx-edit-alt me-2"></i> Edit</a>
+                                <a class="dropdown-item" onclick="return confirmDelete('{{ url('delete_event', $event->id) }}');" href="#"><i class="bx bx-trash me-2"></i> Delete</a>
                             </div>
                           </div>
                         </td>
                       </tr>
-                      @endforeach
-                      
+                      @empty
+                      <tr><td colspan="6" class="text-center text-muted py-4">@if(request('search'))No events found matching "{{ request('search') }}"@else No events yet @endif</td></tr>
+                      @endforelse
                     </tbody>
                   </table>
                 </div>
+                @if($data->hasPages())
+                  <div class="card-body">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+                      <div class="text-muted small">Showing {{ $data->firstItem() }} to {{ $data->lastItem() }} of {{ $data->total() }} events</div>
+                      <nav>{{ $data->links('pagination::bootstrap-4') }}</nav>
+                    </div>
+                  </div>
+                @endif
               </div>
 
 

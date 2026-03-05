@@ -211,8 +211,8 @@
                     <p class="font-serif italic text-2xl md:text-3xl text-gray-300 mb-10">(Greatest Love Abode)</p>
                     
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button onclick="switchPage('events')" class="bg-accent text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-accentDark transition shadow-[0_0_25px_rgba(0,180,216,0.4)]">Plan Your Visit</button>
-                        <button onclick="switchPage('media')" class="border border-white/30 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-primary transition flex items-center justify-center gap-2"><i class="fa-solid fa-play"></i> Watch Online</button>
+                        <button onclick="switchPage('events')" class="bg-accent text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-accentDark transition shadow-[0_0_25px_rgba(0,180,216,0.4)]">Get Started</button>
+                        <button onclick="switchPage('about')" class="border border-white/30 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-primary transition flex items-center justify-center gap-2"><i class="fa-solid fa-play"></i> Contact Us</button>
                     </div>
                 </div>
             </div>
@@ -227,13 +227,15 @@
                     <div class="bg-cardDark/95 backdrop-blur border border-white/5 p-8 rounded-xl shadow-xl hover:-translate-y-2 transition duration-300" data-aos="fade-up" data-aos-delay="100">
                         <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center mb-4 text-accent"><i class="fa-solid fa-location-dot"></i></div>
                         <h3 class="font-serif text-xl mb-1 text-white">Location</h3>
-                        <p class="text-textGray text-xs uppercase tracking-wide mb-4">123 Faith Avenue<br>Spiritual District, CA</p>
+                        <p class="text-textGray text-xs uppercase tracking-wide mb-4">Iwaya<br> Lagos Mainland</p>
                     </div>
                     <div class="bg-cardDark/95 backdrop-blur border border-white/5 p-8 rounded-xl shadow-xl hover:-translate-y-2 transition duration-300 group cursor-pointer" data-aos="fade-up" data-aos-delay="200">
                         <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center mb-4 text-accent"><i class="fa-regular fa-user"></i></div>
                         <h3 class="font-serif text-xl mb-1 text-white">New Here?</h3>
                         <p class="text-textGray text-xs uppercase tracking-wide mb-4">We'd love to meet you</p>
+                        <a href="#confession">
                         <span class="text-accent text-xs font-bold uppercase tracking-wider group-hover:underline">Get Started &rarr;</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -259,7 +261,7 @@
                     <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full text-brand-accent text-xs font-bold tracking-widest uppercase mb-6" data-aos="fade-down">
                         <i class="fas fa-heart text-red-500"></i> Identity In Christ
                     </div>
-                    <h1 class="font-serif text-5xl md:text-7xl text-white mb-6 leading-tight" data-aos="fade-up">
+                    <h1 id="confession" class="font-serif text-5xl md:text-7xl text-white mb-6 leading-tight" data-aos="fade-up">
                         Beyond Faith <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Confession</span>
                     </h1>
                     <p class="text-gray-400 max-w-2xl mx-auto text-lg" data-aos="fade-up" data-aos-delay="100">
@@ -572,50 +574,91 @@
     </div>
 </section>
 
-                                <div class="max-w-7xl mx-auto px-4 mb-24">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                        <div class="h-[400px] rounded-2xl overflow-hidden relative" data-aos="fade-right">
-                            <img src="https://images.unsplash.com/photo-1544983057-7977a4687563?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover">
-                        </div>
-                        <div data-aos="fade-left">
-                            <span class="text-accent text-xs font-bold uppercase tracking-widest mb-2 block">Established 2013</span>
-                            <h2 class="font-serif text-4xl text-white mb-6">Our History</h2>
-                            <p class="text-textGray mb-6 text-sm leading-relaxed">
-                                Beyond Faith International Church started in a small living room with just 12 people who dared to believe God for more.
-                            </p>
-                            <p class="text-textGray text-sm leading-relaxed">
-                                What began as a weekly bible study quickly grew into a vibrant community of believers passionate about authentic worship and tangible impact.
-                            </p>
-                        </div>
-                    </div>
+                               <div class="max-w-7xl mx-auto px-4 mb-32">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        
+        <div class="relative aos-init aos-animate" data-aos="fade-right">
+            <div class="h-[500px] rounded-3xl overflow-hidden relative z-10 shadow-2xl">
+                <img src="img/history.JPG" 
+                     class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" alt="Church History">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#050a14] via-transparent to-transparent opacity-60"></div>
+            </div>
+            
+            <div class="absolute -bottom-6 -right-6 bg-accent p-6 rounded-2xl shadow-xl z-20 hidden md:block" data-aos="zoom-in" data-aos-delay="300">
+                <div class="text-white">
+                    <span class="block text-3xl font-bold">1st</span>
+                    <span class="text-[10px] uppercase tracking-widest opacity-80">Convert from Crusade</span>
                 </div>
+            </div>
+            
+            <div class="absolute -top-10 -left-10 w-32 h-32 bg-accent/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div data-aos="fade-left" class="aos-init aos-animate relative">
+            <span class="text-accent text-xs font-bold uppercase tracking-[0.3em] mb-4 block">The Genesis</span>
+            <h2 class="font-serif text-5xl text-white mb-8">Our History</h2>
+            
+            <div class="space-y-6 relative">
+                <div class="absolute left-[-20px] top-2 bottom-2 w-[1px] bg-gradient-to-b from-accent/50 via-white/10 to-transparent"></div>
+
+                <div class="relative">
+                    <div class="absolute left-[-24px] top-2 w-2 h-2 rounded-full bg-accent shadow-[0_0_10px_#0ea5e9]"></div>
+                    <p class="text-textGray text-base leading-relaxed">
+                        Beyond Faith Int'l Church started at <span class="text-white">Iwaya old bus stop</span> by the Iwaya canal following a three-day crusade. Out of eight who gave their lives, only one convert remained to seed what would become this global mandate.
+                    </p>
+                </div>
+
+                <div class="relative bg-white/5 p-6 rounded-2xl border border-white/5 italic">
+                    <p class="text-textGray text-base leading-relaxed">
+                        "It took a month for that convert to gain the boldness to sit in our circle of twelve chairs. I remember preaching in light rain when a passerby stopped to cover me with an umbrella. Moved by this act, my only member finally stepped forward to take the umbrella while the stranger sat to listen. We became three that day."
+                    </p>
+                </div>
+
+                <div class="relative">
+                    <div class="absolute left-[-24px] top-2 w-2 h-2 rounded-full bg-white/20"></div>
+                    <p class="text-textGray text-base leading-relaxed">
+                        From those humble beginnings in the open space, where the faithful would often watch from 20 feet away, we grew to eight adults and eventually transitioned to our first indoor space—a room in a primary school at <span class="text-white">Okoagbon</span>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-10 flex items-center gap-6">
+                <div class="flex -space-x-3">
+                    <div class="w-10 h-10 rounded-full border-2 border-[#050a14] bg-gray-800 flex items-center justify-center text-[10px] text-white">BFIC</div>
+                    <div class="w-10 h-10 rounded-full border-2 border-[#050a14] bg-accent flex items-center justify-center text-[10px] text-white italic font-serif">Love</div>
+                </div>
+                <p class="text-[10px] text-textGray uppercase tracking-widest font-bold">From humanity to divinity</p>
+            </div>
+        </div>
+    </div>
+</div>
                 
-                <div class="max-w-7xl mx-auto px-4 text-center">
-                    <h2 class="font-serif text-4xl text-white mb-16">Our Leadership</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div class="group" data-aos="fade-up">
-                            <div class="overflow-hidden rounded-lg mb-4">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop" class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">
-                            </div>
-                            <h4 class="font-serif text-xl text-white">Dr. James Sterling</h4>
-                            <span class="text-accent text-[10px] uppercase tracking-widest">Senior Pastor</span>
-                        </div>
-                        <div class="group" data-aos="fade-up" data-aos-delay="100">
-                            <div class="overflow-hidden rounded-lg mb-4">
-                                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1976&auto=format&fit=crop" class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">
-                            </div>
-                            <h4 class="font-serif text-xl text-white">Sarah Sterling</h4>
-                            <span class="text-accent text-[10px] uppercase tracking-widest">Co-Pastor & Worship</span>
-                        </div>
+                <!--<div class="max-w-7xl mx-auto px-4 text-center">-->
+                <!--    <h2 class="font-serif text-4xl text-white mb-16">Our Leadership</h2>-->
+                <!--    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">-->
+                <!--        <div class="group" data-aos="fade-up">-->
+                <!--            <div class="overflow-hidden rounded-lg mb-4">-->
+                <!--                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop" class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">-->
+                <!--            </div>-->
+                <!--            <h4 class="font-serif text-xl text-white">Dr. James Sterling</h4>-->
+                <!--            <span class="text-accent text-[10px] uppercase tracking-widest">Senior Pastor</span>-->
+                <!--        </div>-->
+                <!--        <div class="group" data-aos="fade-up" data-aos-delay="100">-->
+                <!--            <div class="overflow-hidden rounded-lg mb-4">-->
+                <!--                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1976&auto=format&fit=crop" class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">-->
+                <!--            </div>-->
+                <!--            <h4 class="font-serif text-xl text-white">Sarah Sterling</h4>-->
+                <!--            <span class="text-accent text-[10px] uppercase tracking-widest">Co-Pastor & Worship</span>-->
+                <!--        </div>-->
                          <!-- <div class="group" data-aos="fade-up" data-aos-delay="200">
-                            <div class="overflow-hidden rounded-lg mb-4">
-                                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop" class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">
-                            </div>
-                            <h4 class="font-serif text-xl text-white">Michael Chen</h4>
-                            <span class="text-accent text-[10px] uppercase tracking-widest">Youth Pastor</span>
-                        </div> -->
-                    </div>
-                </div>
+                <!--            <div class="overflow-hidden rounded-lg mb-4">-->
+                <!--                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop" class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">-->
+                <!--            </div>-->
+                <!--            <h4 class="font-serif text-xl text-white">Michael Chen</h4>-->
+                <!--            <span class="text-accent text-[10px] uppercase tracking-widest">Youth Pastor</span>-->
+                <!--        </div> -->-->
+                <!--    </div>-->
+                <!--</div>-->
             </div>
         </section>
 
@@ -740,74 +783,167 @@
 
 
 
-        <section id="media-page" class="page-section hidden">
-            <div class="pt-32 pb-10 text-center">
-                <h1 class="font-serif text-5xl md:text-6xl text-white mb-4">Media Library</h1>
-                <p class="text-textGray">Grow in your faith with our collection of sermons.</p>
-                
-                <div class="mt-10 flex justify-center gap-2">
-                    <button class="px-6 py-2 rounded-full bg-accent text-white text-[10px] font-bold uppercase tracking-widest">All</button>
-                    <button class="px-6 py-2 rounded-full bg-cardDark text-textGray hover:text-white border border-white/10 text-[10px] font-bold uppercase tracking-widest transition">Sermons</button>
-                    <button class="px-6 py-2 rounded-full bg-cardDark text-textGray hover:text-white border border-white/10 text-[10px] font-bold uppercase tracking-widest transition">Ebooks</button>
-                </div>
+<section id="media-page" class="page-section hidden">
+    <div class="pt-32 pb-10 text-center">
+        <h1 class="font-serif text-5xl md:text-6xl text-white mb-4">Media Library</h1>
+        <p class="text-textGray max-w-2xl mx-auto">Grow in your faith with our collection of sermons, teachings, and spiritual resources.</p>
+        
+        <div class="mt-10 flex justify-center gap-2 flex-wrap">
+            <button id="filterAll" class="filter-btn px-6 py-2 rounded-full bg-accent text-white text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-accent/30">All</button>
+            <button id="filterSermons" class="filter-btn px-6 py-2 rounded-full bg-cardDark text-textGray hover:text-white hover:bg-accent/20 border border-white/10 text-[10px] font-bold uppercase tracking-widest transition">Sermons</button>
+            <button id="filterEbooks" class="filter-btn px-6 py-2 rounded-full bg-cardDark text-textGray hover:text-white hover:bg-accent/20 border border-white/10 text-[10px] font-bold uppercase tracking-widest transition">Ebooks</button>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 pb-20">
+        <div id="sermonsSection">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+                <h3 class="text-white text-2xl font-serif flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                        <i class="fa-solid fa-headphones text-accent"></i>
+                    </div>
+                    Latest Sermons
+                </h3>
+                <form method="GET" action="{{ url('/#media-page') }}" class="flex gap-2">
+                    <input type="text" name="search_sermons" value="{{ request('search_sermons') }}" placeholder="Search sermons..." class="bg-cardDark border border-white/10 rounded-full px-4 py-2 text-white text-sm focus:outline-none focus:border-accent w-64">
+                    <button type="submit" class="bg-accent text-white px-4 py-2 rounded-full text-sm hover:bg-accentDark transition"><i class="fa-solid fa-search"></i></button>
+                </form>
             </div>
-
-            <div class="max-w-7xl mx-auto px-4 pb-20">
-                <h3 class="text-white text-xl font-serif mb-6 flex items-center gap-2"><i class="fa-solid fa-headphones text-accent"></i> Latest Sermons</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-                   @foreach ($messages as $message)
-                   <a href="{{ url('audio_id', $message->id) }}">
-                    <div class="bg-cardDark rounded-xl overflow-hidden border border-white/5 hover:border-accent transition group cursor-pointer" >
-                        <div class="aspect-video relative overflow-hidden">
-                                @if($message->images)
-                         
-                        
-                            <img src="{{ asset($message->images) }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                          @endif
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                                <i class="fa-regular fa-circle-play text-5xl text-white drop-shadow-lg"></i>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+               @foreach ($messages as $message)
+               <a href="{{ url('audio_id', $message->id) }}">
+                <div class="bg-cardDark rounded-2xl overflow-hidden border border-white/5 hover:border-accent hover:shadow-xl hover:shadow-accent/20 transition-all duration-300 group cursor-pointer">
+                    <div class="aspect-video relative overflow-hidden">
+                        @if($message->images)
+                            <img src="{{ asset($message->images) }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        @endif
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <div class="w-16 h-16 rounded-full bg-accent flex items-center justify-center transform scale-75 group-hover:scale-100 transition">
+                                <i class="fa-solid fa-play text-white text-xl ml-1"></i>
                             </div>
-
-                        </div>
-                        <div class="p-6">
-                            <div class="flex justify-between text-[10px] text-textGray mb-2 uppercase tracking-wide">
-                                <span class="text-accent font-bold">{{ $message->created_at }}</span>
-                                <span>42 min</span>
-                            </div>
-                            <h3 class="font-serif text-xl text-white mb-1 group-hover:text-accent transition">{{ $message->header}}</h3>
-                            <p class="text-xs text-textGray">Pastor Livinus Nneji</p>
-                            <span class="text-[10px] text-white/50 mt-4 block">Listen Now</span>
                         </div>
                     </div>
-                    </a>
-                    @endforeach
-                    
+                    <div class="p-6">
+                        <div class="flex justify-between text-[10px] text-textGray mb-3 uppercase tracking-wide">
+                            <span class="text-accent font-bold">{{ $message->created_at->format('M d, Y') }}</span>
+                            <span><i class="fa-solid fa-clock mr-1"></i>42 min</span>
+                        </div>
+                        <h3 class="font-serif text-xl text-white mb-2 group-hover:text-accent transition line-clamp-2">{{ $message->header}}</h3>
+                        <p class="text-xs text-textGray flex items-center gap-2">
+                            <i class="fa-solid fa-user-tie text-accent"></i>
+                            Pastor Livinus Nneji
+                        </p>
+                        <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+                            <span class="text-[10px] text-accent font-bold uppercase tracking-wider">Listen Now</span>
+                            <i class="fa-solid fa-arrow-right text-accent group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
                 </div>
+                </a>
+                @endforeach
+            </div>
+            @if($messages->hasPages())
+                <div class="flex justify-center mt-8">
+                    {{ $messages->links('pagination::tailwind') }}
+                </div>
+            @endif
+        </div>
 
-                <h3 class="text-white text-xl font-serif mb-6 flex items-center gap-2"><i class="fa-solid fa-book-open text-accent"></i> E-Books & Guides</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    @foreach($ebooks as $ebook)
-                    <div class="bg-cardDark p-6 rounded-xl border border-white/5 flex gap-6 items-center">
-                                                    
+        <div id="ebooksSection" class="mt-20">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+                <h3 class="text-white text-2xl font-serif flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                        <i class="fa-solid fa-book-open text-accent"></i>
+                    </div>
+                    E-Books & Guides
+                </h3>
+                <form method="GET" action="{{ url('/#media-page') }}" class="flex gap-2">
+                    <input type="text" name="search_ebooks" value="{{ request('search_ebooks') }}" placeholder="Search ebooks..." class="bg-cardDark border border-white/10 rounded-full px-4 py-2 text-white text-sm focus:outline-none focus:border-accent w-64">
+                    <button type="submit" class="bg-accent text-white px-4 py-2 rounded-full text-sm hover:bg-accentDark transition"><i class="fa-solid fa-search"></i></button>
+                </form>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                @foreach($ebooks as $ebook)
+                <div class="bg-cardDark p-6 rounded-2xl border border-white/5 hover:border-accent hover:shadow-xl hover:shadow-accent/20 transition-all duration-300 flex gap-6 items-center group">
                     @if($ebook->images)
-                         
-                        
-                       
-                        <div class="w-24 h-32 bg-gray-700 flex-shrink-0 rounded bg-cover bg-center" style="background-image: url('{{ asset($ebook->images) }}"></div>
-                          @endif
-                        <div>
-                            <h4 class="font-serif text-xl text-white">{{$ebook->header}}</h4>
-                            
-                            <div class="flex items-center justify-between mt-4">
-                                <span class="text-accent text-sm font-bold">₦{{ number_format($ebook->price, 2) }}</span>
-                                <a href="{{ url('getEbook', $ebook->id) }}" class="border border-accent text-accent px-4 py-1 rounded-full text-[10px] font-bold uppercase hover:bg-accent hover:text-white transition">Get Copy</a>
+                        <div class="w-28 h-36 flex-shrink-0 rounded-lg overflow-hidden shadow-lg relative">
+                            <img src="{{ asset($ebook->images) }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        </div>
+                    @endif
+                    <div class="flex-1">
+                        <h4 class="font-serif text-xl text-white mb-2 group-hover:text-accent transition">{{$ebook->header}}</h4>
+                        @if($ebook->category)
+                            <span class="inline-block bg-accent/20 text-accent px-2 py-1 rounded text-[10px] font-bold uppercase mb-3">{{$ebook->category}}</span>
+                        @endif
+                        <div class="flex items-center justify-between mt-4">
+                            <div>
+                                <span class="text-accent text-2xl font-bold">₦{{ number_format($ebook->price, 2) }}</span>
+                                @if($ebook->rating > 0)
+                                    <div class="flex items-center gap-1 mt-1">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <i class="fa{{ $i <= $ebook->rating ? 's' : 'r' }} fa-star text-yellow-400 text-xs"></i>
+                                        @endfor
+                                        <span class="text-textGray text-xs ml-1">({{ $ebook->reviews_count }})</span>
+                                    </div>
+                                @endif
                             </div>
+                            <a href="{{ route('ebooks.show', encrypt($ebook->id)) }}" class="bg-accent text-white px-6 py-2 rounded-full text-[10px] font-bold uppercase hover:bg-accentDark hover:shadow-lg hover:shadow-accent/30 transition flex items-center gap-2">
+                                Get Copy <i class="fa-solid fa-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
-                    @endforeach
-               
+                </div>
+                @endforeach
             </div>
-        </section>
+            @if($ebooks->hasPages())
+                <div class="flex justify-center mt-8">
+                    {{ $ebooks->links('pagination::tailwind') }}
+                </div>
+            @endif
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterAll = document.getElementById('filterAll');
+    const filterSermons = document.getElementById('filterSermons');
+    const filterEbooks = document.getElementById('filterEbooks');
+    const sermonsSection = document.getElementById('sermonsSection');
+    const ebooksSection = document.getElementById('ebooksSection');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+
+    function setActive(btn) {
+        filterBtns.forEach(b => {
+            b.classList.remove('bg-accent', 'text-white', 'shadow-lg', 'shadow-accent/30');
+            b.classList.add('bg-cardDark', 'text-textGray');
+        });
+        btn.classList.add('bg-accent', 'text-white', 'shadow-lg', 'shadow-accent/30');
+        btn.classList.remove('bg-cardDark', 'text-textGray');
+    }
+
+    filterAll.addEventListener('click', function() {
+        sermonsSection.style.display = 'block';
+        ebooksSection.style.display = 'block';
+        setActive(this);
+    });
+
+    filterSermons.addEventListener('click', function() {
+        sermonsSection.style.display = 'block';
+        ebooksSection.style.display = 'none';
+        setActive(this);
+    });
+
+    filterEbooks.addEventListener('click', function() {
+        sermonsSection.style.display = 'none';
+        ebooksSection.style.display = 'block';
+        setActive(this);
+    });
+});
+</script>
+
 
              <section id="media-detail-page" class="page-section hidden">
             <div class="pt-32 px-4 max-w-7xl mx-auto min-h-screen">
@@ -934,7 +1070,7 @@
 </div>
 
     </main>
-    <section class="py-20 px-4 bg-[#050a14]" id="contact">
+   <section class="py-20 px-4 bg-[#050a14]" id="contact">
     <div class="max-w-7xl mx-auto">
         
         <div class="text-center mb-16" data-aos="fade-up">
@@ -951,7 +1087,7 @@
                     
                     <div>
                         <label class="block text-gray-500 text-xs uppercase tracking-wide mb-2">Name</label>
-                        <input type="text" name="name"required 
+                        <input type="text" name="name" required 
                                class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#0ea5e9] focus:ring-1 focus:ring-[#0ea5e9] transition" 
                                placeholder="John Doe">
                     </div>
@@ -986,7 +1122,11 @@
                         </div>
                         <div>
                             <h4 class="text-white font-bold mb-1">Our Location</h4>
-                            <p class="text-gray-400 text-sm">123 Faith Boulevard<br>Spiritual City, ST 12345</p>
+                            <p class="text-gray-400 text-sm leading-relaxed">
+                                35 Owoduni Street,<br>
+                                Opposite Iwaya Market,<br>
+                                Iwaya, Yaba, Lagos.
+                            </p>
                         </div>
                     </div>
 
@@ -996,7 +1136,7 @@
                         </div>
                         <div>
                             <h4 class="text-white font-bold mb-1">Contact Info</h4>
-                            <p class="text-gray-400 text-sm">(555) 123-4567<br>hello@beyondfaith.org</p>
+                            <p class="text-gray-400 text-sm">hello@beyondfaith.org</p>
                         </div>
                     </div>
 
@@ -1005,15 +1145,23 @@
                             <i class="far fa-clock"></i>
                         </div>
                         <div>
-                            <h4 class="text-white font-bold mb-1">Office Hours</h4>
-                            <p class="text-gray-400 text-sm">Mon - Fri: 9am - 5pm<br>Sat - Sun: Closed (Services only)</p>
+                            <h4 class="text-white font-bold mb-1">Service Times</h4>
+                            <p class="text-gray-400 text-sm">Sunday: 8:00 AM — Main Service<br>Wednesday: 6:00 PM — Midweek</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="h-48 rounded-xl overflow-hidden border border-white/10 shadow-inner bg-gray-800 relative group">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.1422937950147!2d-73.9873196845941!3d40.75889497932681!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1622646638360!5m2!1sen!2sus" 
-                            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" class="grayscale group-hover:grayscale-0 transition duration-500"></iframe>
+                <div class="h-64 rounded-xl overflow-hidden border border-white/10 shadow-inner bg-gray-800 relative group">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.123456!2d3.385!3d6.505!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8c5f5f5f5f5f%3A0x5f5f5f5f5f5f5f5f!2sOwodunni%20St%2C%20Iwaya%2C%20Lagos!5e0!3m2!1sen!2sng!4v1700000000000!5m2!1sen!2sng" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        class="grayscale contrast-125 group-hover:grayscale-0 transition duration-700">
+                    </iframe>
                 </div>
 
             </div>
@@ -1066,6 +1214,22 @@
             const loader = document.getElementById('loader');
             loader.style.opacity = '0';
             setTimeout(() => loader.style.display = 'none', 500);
+            
+            // Handle hash navigation on page load
+            const hash = window.location.hash.replace('#', '');
+            if (hash && hash.endsWith('-page')) {
+                switchPage(hash.replace('-page', ''));
+            }
+        });
+
+        // Handle hash changes (browser back/forward)
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.replace('#', '');
+            if (hash && hash.endsWith('-page')) {
+                switchPage(hash.replace('-page', ''));
+            } else if (!hash) {
+                switchPage('home');
+            }
         });
 
         // Toggle Mobile Menu
@@ -1094,10 +1258,17 @@
             if (target) {
                 target.classList.remove('hidden');
                 
-                // 4. Scroll to top
+                // 4. Update URL hash without triggering hashchange
+                if (history.pushState) {
+                    history.pushState(null, null, '#' + targetId);
+                } else {
+                    window.location.hash = targetId;
+                }
+                
+                // 5. Scroll to top
                 window.scrollTo({top: 0, behavior: 'smooth'});
                 
-                // 5. Refresh animations
+                // 6. Refresh animations
                 AOS.refresh();
             }
         }

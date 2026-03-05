@@ -63,77 +63,7 @@
       <div class="layout-container">
         <!-- Menu -->
 
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-          <div class="app-brand demo">
-            <a href="index.html" class="app-brand-link">
-              <span class="app-brand-logo demo">
-             <h3  >BEYOND FAITH</h2>
-              </span>
-            </a>
-
-            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-              <i class="bx bx-chevron-left bx-sm align-middle"></i>
-            </a>
-          </div>
-
-          <div class="menu-inner-shadow"></div>
-
-          <ul class="menu-inner py-1">
-            <!-- Dashboard -->
-            <li class="menu-item ">
-              <a href="{{url('home')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                <div data-i18n="Analytics">Dashboard</div>
-              </a>
-            </li>
-
-            <!-- Components -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">Pages</span></li>
-            <!-- Cards -->
-            <li class="menu-item ">
-              <a href="{{url('events')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Basic">Events</div>
-              </a>
-            </li>
-            <!-- User interface -->
-            <li class="menu-item active">
-              <a href="{{url('messages')}}" class="menu-link ">
-                <i class="menu-icon tf-icons bx bx-box"></i>
-                <div data-i18n="User interface">Messages</div>
-              </a>
-             
-            </li>
-
-            <!-- Extended components -->
-            <li class="menu-item">
-              <a href="{{url('admingallery')}}" class="menu-link ">
-                <i class="menu-icon tf-icons bx bx-copy"></i>
-                <div data-i18n="Extended UI">Gallery</div>
-              </a>
-             
-            </li>
-
-            <li class="menu-item">
-              <a href="{{url('ebooksource')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-crown"></i>
-                <div data-i18n="Boxicons">Ebooks</div>
-              </a>
-            </li>
-            <!-- Forms & Tables -->
-          
-            <!-- Tables -->
-            <li class="menu-item">
-              <a href="{{url('contacts')}}" class="menu-link">
-              <i class=' menu-icon bx bxs-inbox'></i>           
-                   <div data-i18n="Tables">Contacts</div>
-              </a>
-            </li>
-            <!-- Misc -->
-           
-          </ul>
-        </aside>
-        <!-- / Menu -->
+        @include('admin.partials.sidebar')
 
         <!-- Layout container -->
         <div class="layout-page">
@@ -268,70 +198,137 @@ document.addEventListener('DOMContentLoaded', function () {
                          
             <!-- Content -->
 
+            @include('admin.partials.breadcrumbs')
+            @include('admin.partials.ui-components')
+
 <div class="row">
     <div class="col-12">
-        <form action="{{ url('messageupload') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ url('messageupload') }}" method="POST" enctype="multipart/form-data" id="messageForm">
             @csrf
-
             <div class="card">
                 <h5 class="card-header">UPLOAD MESSAGES</h5>
-
                 <div class="card-body demo-vertical-spacing demo-only-element">
-
-                    <!-- Message Header -->
-                    <div class="input-group mb-3">
-                        <label class="input-group-text" for="messageHeader">Heading</label>
-                        <input type="text"
-                               class="form-control"
-                               name="header"
-                               id="messageHeader"
-                               placeholder="Enter message heading"
-                               required />
-                    </div>
-                   
-
-                    <!-- Audio Upload -->
-                    <div class="input-group mb-3">
-                        <label class="input-group-text" for="audioFile">Audio</label>
-                        <input type="file"
-                               class="form-control"
-                               name="audio"
-                               id="audioFile"
-                               accept="audio/*"
-                               required />
-                    </div>
-                  <div class="input-group mb-3">
-                      <label class="input-group-text" for="imageInput">Thumbnail</label>
-                      <input type="file"
-                            class="form-control"
-                            name="images"
-                            id="imageInput"
-                            accept="image/*" 
-                            required />
-                  </div>
-
-                         <div class="input-group">
-                        <textarea
-                          type="text"
-                     
-                          class="form-control"
-                    
-                          placeholder="Write Up"
-                         
-                          name="message"
-                          required
-                        ></textarea>
+                    @if($errors->any())
+                      <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        @foreach($errors->all() as $error)
+                          <div><i class="bx bx-error-circle"></i> {{ $error }}</div>
+                        @endforeach
                       </div>
-                    <!-- Submit -->
-                    <button class="btn btn-outline-primary" type="submit">
-                        Save
-                    </button>
+                    @endif
 
+                    <div class="input-group mb-3">
+                        <label class="input-group-text">Heading</label>
+                        <input type="text" class="form-control" name="header" required />
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <label class="input-group-text">Audio</label>
+                        <input type="file" class="form-control" name="audio" id="messageAudio" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg" required />
+                    </div>
+                    <div id="audioPreview" style="display:none;" class="mb-3">
+                      <audio id="audioPlayer" controls style="width:100%; max-width:400px;"></audio>
+                    </div>
+
+                    <div class="input-group mb-3">
+                      <label class="input-group-text">Thumbnail</label>
+                      <input type="file" class="form-control" name="images" id="messageThumbnail" accept="image/jpeg,image/jpg,image/png,image/webp" required />
+                    </div>
+                    <div id="thumbnailPreview" style="display:none;" class="mb-3">
+                      <img id="thumbnailImg" style="max-width:200px; max-height:200px; border-radius:8px; border:2px solid #ddd;" />
+                    </div>
+
+                    <div class="input-group">
+                      <textarea class="form-control" placeholder="Write Up" name="message" required></textarea>
+                    </div>
+                    
+                    <div id="messageProgress" style="display:none;" class="mt-3">
+                      <div class="progress">
+                        <div id="messageProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%">0%</div>
+                      </div>
+                    </div>
+
+                    <button class="btn btn-church-primary mt-3" type="submit" id="messageSubmitBtn">Save</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+const messageAudio = document.getElementById('messageAudio');
+const audioPreview = document.getElementById('audioPreview');
+const audioPlayer = document.getElementById('audioPlayer');
+const messageThumbnail = document.getElementById('messageThumbnail');
+const thumbnailPreview = document.getElementById('thumbnailPreview');
+const thumbnailImg = document.getElementById('thumbnailImg');
+const messageForm = document.getElementById('messageForm');
+const messageSubmitBtn = document.getElementById('messageSubmitBtn');
+const messageProgressBar = document.getElementById('messageProgressBar');
+const messageProgress = document.getElementById('messageProgress');
+
+messageAudio.addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file && file.type.startsWith('audio/')) {
+    audioPlayer.src = URL.createObjectURL(file);
+    audioPreview.style.display = 'block';
+  }
+});
+
+messageThumbnail.addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      thumbnailImg.src = e.target.result;
+      thumbnailPreview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+messageForm.addEventListener('submit', function(e) {
+  if (!this.checkValidity()) return;
+  e.preventDefault();
+  
+  messageSubmitBtn.disabled = true;
+  messageSubmitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Uploading...';
+  messageProgress.style.display = 'block';
+  
+  const formData = new FormData(this);
+  const xhr = new XMLHttpRequest();
+  
+  xhr.upload.addEventListener('progress', function(e) {
+    if (e.lengthComputable) {
+      const percent = Math.round((e.loaded / e.total) * 100);
+      messageProgressBar.style.width = percent + '%';
+      messageProgressBar.textContent = percent + '%';
+    }
+  });
+  
+  xhr.addEventListener('load', function() {
+    if (xhr.status === 200) {
+      window.location.reload();
+    } else {
+      messageSubmitBtn.disabled = false;
+      messageSubmitBtn.innerHTML = 'Save';
+      messageProgress.style.display = 'none';
+      alert('Upload failed. Please try again.');
+    }
+  });
+  
+  xhr.addEventListener('error', function() {
+    messageSubmitBtn.disabled = false;
+    messageSubmitBtn.innerHTML = 'Save';
+    messageProgress.style.display = 'none';
+    alert('Upload failed. Please check your connection.');
+  });
+  
+  xhr.open('POST', '{{ url("messageupload") }}');
+  xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('input[name="_token"]').value);
+  xhr.send(formData);
+});
+</script>
 <!-- @if ($errors->any())
     <div class="alert alert-danger">
         <ul class="mb-0">
@@ -344,57 +341,52 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 <div style="margin-top:10vh" class="card">
-    <h5 class="card-header">UPLOADED MESSAGES</h5>
-
+    <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+      <h5 class="mb-0">All Messages</h5>
+      <form method="GET" class="d-flex gap-2">
+        <input type="text" name="search" class="form-control form-control-sm" placeholder="Search messages..." value="{{ request('search') }}" style="min-width: 200px;">
+        <button type="submit" class="btn btn-sm btn-primary"><i class="bx bx-search"></i></button>
+        @if(request('search'))
+          <a href="{{ url('messages') }}" class="btn btn-sm btn-secondary"><i class="bx bx-x"></i></a>
+        @endif
+      </form>
+    </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered table-striped align-middle">
+            <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>#</th>
-                        <th>Header</th>
-                        <th>Audio</th>
-                        <th>Uploaded</th>
-                        <th class="text-center">Action</th>
+                        <th class="d-none d-md-table-cell">#</th>
+                        <th><a href="?sort=header&order={{ request('sort') == 'header' && request('order') == 'asc' ? 'desc' : 'asc' }}{{ request('search') ? '&search='.request('search') : '' }}" class="text-decoration-none text-dark">Header @if(request('sort') == 'header')<i class="bx bx-{{ request('order') == 'asc' ? 'up' : 'down' }}-arrow"></i>@endif</a></th>
+                        <th class="d-none d-lg-table-cell">Audio</th>
+                        <th class="d-none d-xl-table-cell"><a href="?sort=created_at&order={{ request('sort') == 'created_at' && request('order') == 'asc' ? 'desc' : 'asc' }}{{ request('search') ? '&search='.request('search') : '' }}" class="text-decoration-none text-dark">Uploaded @if(request('sort') == 'created_at' || !request('sort'))<i class="bx bx-{{ request('order') == 'asc' ? 'up' : 'down' }}-arrow"></i>@endif</a></th>
+                        <th>Action</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     @forelse($data as $index => $item)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-
-                            <td>{{ $item->header }}</td>
-
-                            <td style="min-width:220px">
-                                <audio controls style="width:100%;">
-                                    <source src="{{ asset($item->audio) }}">
-                                    Your browser does not support audio.
-                                </audio>
-                            </td>
-
-                            <td>{{ $item->created_at->format('d M Y, H:i') }}</td>
-
-                            <td class="text-center">
-                                       <a href="{{ url('message_id', $item->id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
-                                        <i class="bi bi-pencil-square"></i></a>
-                                      <a class="btn btn-sm btn-outline-danger"   onclick="return confirm('Are you sure you want to delete this ?');" href="{{ url('delete_message', $item->id) }}" title="Delete" >
-                                           <i class="bi bi-trash"></i >
-                                       </a>
-                                
-                                
+                            <td class="d-none d-md-table-cell">{{ ($data->currentPage()-1) * $data->perPage() + $index + 1 }}</td>
+                            <td><strong>{{ $item->header }}</strong><div class="d-xl-none small text-muted">{{ $item->created_at->format('M d, Y') }}</div></td>
+                            <td class="d-none d-lg-table-cell" style="min-width:220px"><audio controls style="width:100%; height:32px;"><source src="{{ asset($item->audio) }}">Your browser does not support audio.</audio></td>
+                            <td class="d-none d-xl-table-cell">{{ $item->created_at->format('d M Y, H:i') }}</td>
+                            <td>
+                                <a href="{{ url('message_id', $item->id) }}" class="btn btn-sm btn-church-primary" title="Edit"><i class="bi bi-pencil-square"></i></a>
+                                <a class="btn btn-sm btn-outline-danger" onclick="return confirmDelete('{{ url('delete_message', $item->id) }}');" href="#" title="Delete"><i class="bi bi-trash"></i></a>
                             </td>
                         </tr>
                     @empty
-                        <tr>
-                            <td colspan="5" class="text-center text-muted">
-                                No audio messages uploaded yet
-                            </td>
-                        </tr>
+                        <tr><td colspan="5" class="text-center text-muted py-4">@if(request('search'))No messages found matching "{{ request('search') }}"@else No audio messages uploaded yet @endif</td></tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+        @if($data->hasPages())
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 gap-2">
+            <div class="text-muted small">Showing {{ $data->firstItem() }} to {{ $data->lastItem() }} of {{ $data->total() }} messages</div>
+            <nav>{{ $data->links('pagination::bootstrap-4') }}</nav>
+          </div>
+        @endif
     </div>
 </div>
 

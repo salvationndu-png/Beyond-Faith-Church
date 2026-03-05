@@ -54,6 +54,11 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
         /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #050A19; }
@@ -76,6 +81,92 @@
             transform: translateX(0); /* Slide in */
         }
         
+    </style>
+    <style>
+.book-3d-container {
+    perspective: 1000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 2rem;
+}
+
+.book-cover {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 
+        0 20px 60px rgba(0, 180, 216, 0.3),
+        0 0 40px rgba(0, 180, 216, 0.2),
+        -10px 0 30px rgba(0, 0, 0, 0.5);
+    transform: rotateY(-15deg) rotateX(5deg);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.book-3d-container:hover .book-cover {
+    transform: rotateY(0deg) rotateX(0deg) scale(1.05);
+    box-shadow: 
+        0 30px 80px rgba(0, 180, 216, 0.4),
+        0 0 60px rgba(0, 180, 216, 0.3),
+        0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.preview-btn {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 180, 216, 0.9);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.group:hover .preview-btn {
+    opacity: 1;
+    bottom: 2.5rem;
+}
+
+.preview-btn:hover {
+    background: rgba(0, 119, 182, 1);
+    transform: translateX(-50%) scale(1.05);
+}
+
+#previewModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(5, 10, 25, 0.95);
+    backdrop-filter: blur(10px);
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+#previewModal.active {
+    display: flex;
+}
+
+.preview-content {
+    background: #0B1221;
+    border-radius: 16px;
+    max-width: 600px;
+    width: 100%;
+    padding: 2rem;
+    position: relative;
+}
     </style>
     <style>
 .lightbox {
@@ -124,8 +215,7 @@ $hasPaid = Payments::where('email', auth()->user()->email ?? 'guest@example.com'
     ->where('status', 'paid')
     ->exists();
 
-
-$reference = 'ebook_' . uniqid();
+$reference = 'ebook_' . bin2hex(random_bytes(8));
 @endphp
 
 <body class="bg-primary text-textLight font-sans antialiased overflow-x-hidden">
@@ -140,7 +230,7 @@ $reference = 'ebook_' . uniqid();
     <nav class="fixed w-full z-50 bg-primary/80 backdrop-blur-md border-b border-white/5 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <div class="flex-shrink-0 cursor-pointer" onclick="switchPage('home')">
+                <a href="{{url('/')}}" class="flex-shrink-0">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center">
                              <i class="fa-solid fa-church text-lg text-white"></i>
@@ -150,14 +240,14 @@ $reference = 'ebook_' . uniqid();
                             <span class="text-[0.6rem] text-textGray tracking-[0.2em] uppercase">International</span>
                         </div>
                     </div>
-                </div>
+                </a>
                 
                 <div class="hidden md:flex space-x-8 text-xs font-bold tracking-widest uppercase text-textGray">
-                    <a href="{{url('/')}}" class="nav-link cursor-pointer hover:text-white transition-colors">Home</a>
-                    <a href="{{url('/#about-page')}}" class="nav-link cursor-pointer hover:text-white transition-colors">About Us</a>
-                    <a href="{{url('/#events-page')}}" class="nav-link cursor-pointer hover:text-white transition-colors">Events</a>
-                    <a href="{{url('/#media-page')}}" class="nav-link cursor-pointer hover:text-white transition-colors">Media</a>
-                    <a href="{{url('/#gallery-page')}}" class="nav-link cursor-pointer hover:text-white transition-colors">Gallery</a>
+                    <a href="{{url('/')}}" class="nav-link hover:text-white transition-colors">Home</a>
+                    <a href="{{url('/')}}#about-page" class="nav-link hover:text-white transition-colors">About Us</a>
+                    <a href="{{url('/')}}#events-page" class="nav-link hover:text-white transition-colors">Events</a>
+                    <a href="{{url('/')}}#media-page" class="nav-link hover:text-white transition-colors">Media</a>
+                    <a href="{{url('/')}}#gallery-page" class="nav-link hover:text-white transition-colors">Gallery</a>
                 </div>
 
                 <div class="hidden md:flex items-center gap-4">
@@ -178,11 +268,11 @@ $reference = 'ebook_' . uniqid();
         </button>
 
         <div class="flex flex-col gap-8 text-center">
-            <a href="{{url('/')}}"  class="text-2xl font-serif text-white hover:text-accent transition">Home</a>
-            <a href="{{url('/#about-page')}}"  class="text-2xl font-serif text-white hover:text-accent transition">About Us</a>
-            <a href="{{url('/#events-page')}}"  class="text-2xl font-serif text-white hover:text-accent transition">Events</a>
-            <a href="{{url('/#media-page')}}"  class="text-2xl font-serif text-white hover:text-accent transition">Media</a>
-            <a href="{{url('/#gallery-page')}}"  class="text-2xl font-serif text-white hover:text-accent transition">Gallery</a>
+            <a href="{{url('/')}}" class="text-2xl font-serif text-white hover:text-accent transition">Home</a>
+            <a href="{{url('/')}}#about-page" class="text-2xl font-serif text-white hover:text-accent transition">About Us</a>
+            <a href="{{url('/')}}#events-page" class="text-2xl font-serif text-white hover:text-accent transition">Events</a>
+            <a href="{{url('/')}}#media-page" class="text-2xl font-serif text-white hover:text-accent transition">Media</a>
+            <a href="{{url('/')}}#gallery-page" class="text-2xl font-serif text-white hover:text-accent transition">Gallery</a>
         </div>
 
         <div class="mt-auto mb-12 border-t border-white/10 pt-8 flex flex-col gap-6 items-center">
@@ -190,7 +280,7 @@ $reference = 'ebook_' . uniqid();
             <div class="flex gap-6 text-2xl text-textGray">
                 <i class="fa-brands fa-facebook hover:text-white"></i>
                 <i class="fa-brands fa-instagram hover:text-white"></i>
-                <i class="fa-brands fa-youtube hover:text-white"></i>
+                <i class="fa-brands fa-youtube hover:text-white"></i>                
             </div>
         </div>
     </div>
@@ -205,6 +295,14 @@ $reference = 'ebook_' . uniqid();
     <i class="fa-solid fa-circle-check"></i>
     <span>{{ session('success') }}</span>
 </div>
+@endif
+
+@if(session('download'))
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    window.location.href = "{{ URL::signedRoute('ebooks.download', ['encrypted' => $encrypted]) }}";
+});
+</script>
 @endif
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -222,10 +320,7 @@ $reference = 'ebook_' . uniqid();
 </script>
 
 
-@php
-    $hasPaid = session()->has('success');
-    $reference = $reference ?? 'ebook_' . uniqid();
-@endphp
+
 
 <section id="ebook-detail-page" style="padding-top:100px !important;"  
     class="page-section py-16 bg-gradient-to-b from-primary/5 to-primary/10">
@@ -233,7 +328,7 @@ $reference = 'ebook_' . uniqid();
     <div  class="max-w-6xl mx-auto px-4">
 
         <!-- Back -->
-        <a href="{{url('/#media-page')}}"
+        <a href="{{url('/')}}#media-page"
             
          class="flex items-center gap-2 text-xs uppercase tracking-widest text-white hover:text-accent mb-8">
             <i class="fa-solid fa-arrow-left"></i>
@@ -244,11 +339,16 @@ $reference = 'ebook_' . uniqid();
         <div class="bg-cardDark rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row">
 
             <!-- Cover -->
-            <div class="relative w-full lg:w-1/3 min-h-[300px]">
-                <img
-                    src="{{ asset($ebook->images) }}"
-                    alt="{{ $ebook->header }}"
-                    class="absolute inset-0 w-full h-full object-cover brightness-90">
+            <div class="relative w-full lg:w-1/3 min-h-[300px] lg:min-h-[500px] group">
+                <div class="book-3d-container">
+                    <img
+                        src="{{ asset($ebook->images) }}"
+                        alt="{{ $ebook->header }}"
+                        class="book-cover">
+                </div>
+                <button onclick="openPreview()" class="preview-btn">
+                    <i class="fa-solid fa-eye"></i> Preview
+                </button>
             </div>
 
             <!-- Content -->
@@ -256,7 +356,7 @@ $reference = 'ebook_' . uniqid();
 
                 <span class="inline-block bg-white/10 text-white px-4 py-1
                              text-[10px] font-bold uppercase rounded-full mb-4">
-                    Ebook
+                    {{ $ebook->category ?? 'Ebook' }}
                 </span>
 
                 <h1 class="font-serif text-3xl lg:text-5xl text-white font-bold mb-4">
@@ -268,13 +368,102 @@ $reference = 'ebook_' . uniqid();
                     <span><i class="fa-regular fa-calendar text-accent"></i> {{ $ebook->created_at->format('M d, Y') }}</span>
                 </div>
 
-                <p class="text-textGray leading-relaxed mb-8">
+                <!-- Rating & Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6 pb-6 border-b border-white/10">
+                    @if($ebook->rating > 0 && $ebook->reviews_count > 0)
+                    <div class="col-span-2 md:col-span-3 lg:col-span-5 flex items-center gap-2 mb-2">
+                        <div class="flex text-yellow-400">
+                            @for($i = 1; $i <= 5; $i++)
+                                <i class="fa{{ $i <= $ebook->rating ? 's' : 'r' }} fa-star text-lg"></i>
+                            @endfor
+                        </div>
+                        <span class="text-white font-bold text-lg">{{ number_format($ebook->rating, 1) }}</span>
+                        <span class="text-textGray text-sm">({{ number_format($ebook->reviews_count) }} reviews)</span>
+                    </div>
+                    @endif
+                    
+                    @if($ebook->pages)
+                    <div class="bg-primary/50 rounded-lg p-3 text-center border border-accent/20">
+                        <i class="fa-solid fa-book-open text-accent text-xl mb-1 block"></i>
+                        <div class="text-white font-bold text-sm">{{ $ebook->pages }}</div>
+                        <div class="text-textGray text-xs">Pages</div>
+                    </div>
+                    @endif
+                    
+                    @if($ebook->file_size)
+                    <div class="bg-primary/50 rounded-lg p-3 text-center border border-accent/20">
+                        <i class="fa-solid fa-file-pdf text-accent text-xl mb-1 block"></i>
+                        <div class="text-white font-bold text-sm">{{ $ebook->file_size }}</div>
+                        <div class="text-textGray text-xs">File Size</div>
+                    </div>
+                    @endif
+                    
+                    @if($ebook->pages)
+                    <div class="bg-primary/50 rounded-lg p-3 text-center border border-accent/20">
+                        <i class="fa-solid fa-clock text-accent text-xl mb-1 block"></i>
+                        <div class="text-white font-bold text-sm">{{ ceil($ebook->pages / 2) }} min</div>
+                        <div class="text-textGray text-xs">Read Time</div>
+                    </div>
+                    @endif
+                    
+                    @if($ebook->downloads_count > 0)
+                    <div class="bg-primary/50 rounded-lg p-3 text-center border border-accent/20">
+                        <i class="fa-solid fa-download text-accent text-xl mb-1 block"></i>
+                        <div class="text-white font-bold text-sm">{{ number_format($ebook->downloads_count) }}+</div>
+                        <div class="text-textGray text-xs">Downloads</div>
+                    </div>
+                    @endif
+                </div>
+
+                <p class="text-textGray leading-relaxed mb-8 text-base">
                     {{ $ebook->message }}
                 </p>
 
-                <div class="mb-8 text-xl  text-white">
-                
-                    <span class="text-accent">₦{{ number_format($ebook->price, 2) }}</span>
+                <!-- What You'll Learn -->
+                <div class="bg-gradient-to-br from-accent/10 to-transparent rounded-xl p-6 mb-8 border border-accent/20">
+                    <h3 class="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-lightbulb text-accent"></i>
+                        What You'll Discover
+                    </h3>
+                    <ul class="space-y-3 text-textGray">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-check-circle text-accent mt-1"></i>
+                            <span>Deep spiritual insights and biblical teachings</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-check-circle text-accent mt-1"></i>
+                            <span>Practical applications for daily Christian living</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-check-circle text-accent mt-1"></i>
+                            <span>Transformative wisdom from Pastor Livinus Nneji</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mb-8">
+                    @if($ebook->is_on_sale && $ebook->original_price)
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="inline-block bg-red-600 text-white px-3 py-1 text-xs font-bold uppercase rounded-full animate-pulse">
+                                <i class="fa-solid fa-fire"></i> Limited Time Offer
+                            </span>
+                            <span class="text-textGray text-lg line-through">₦{{ number_format($ebook->original_price, 2) }}</span>
+                        </div>
+                        <div class="text-3xl font-bold text-white mb-3">
+                            <span class="text-accent">₦{{ number_format($ebook->price, 2) }}</span>
+                            <span class="text-green-500 text-lg ml-2">Save {{ round((($ebook->original_price - $ebook->price) / $ebook->original_price) * 100) }}%</span>
+                        </div>
+                    @else
+                        <div class="text-3xl font-bold text-white mb-3">
+                            <span class="text-accent">₦{{ number_format($ebook->price, 2) }}</span>
+                        </div>
+                    @endif
+                    <div class="flex items-center gap-2 text-xs text-textGray">
+                        <i class="fa-brands fa-cc-visa text-lg"></i>
+                        <i class="fa-brands fa-cc-mastercard text-lg"></i>
+                        <span>Secure payment via</span>
+                        <img src="https://paystack.com/assets/img/logo/logo.svg" alt="Paystack" class="h-4 brightness-200">
+                    </div>
                 </div>
 
                 <!-- Action -->
@@ -282,14 +471,22 @@ $reference = 'ebook_' . uniqid();
 @if(!$hasPaid)
     <button
         id="payBtn"
-        class="bg-accent px-8 py-3 rounded-full text-white font-bold uppercase">
-        Pay & Download
+        data-callback-url="{{ route('ebooks.callback', $encrypted) }}"
+        class="w-full bg-gradient-to-r from-accent to-accentDark px-8 py-4 rounded-full text-white font-bold uppercase text-lg shadow-lg shadow-accent/30 hover:shadow-accent/50 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3">
+        <i class="fa-solid fa-lock"></i>
+        Pay & Download Now
     </button>
+    <p class="text-center text-textGray text-xs mt-3">
+        <i class="fa-solid fa-shield-halved text-accent"></i> Secure checkout • Instant download
+    </p>
 @else
-    <a href="{{ route('ebooks.download', $ebook->id) }}"
-       class="bg-green-600 px-8 py-3 rounded-full text-white font-bold uppercase">
-        Download Ebook
-    </a>
+    <div class="bg-gradient-to-r from-green-600/20 to-green-600/10 border-2 border-green-600 text-green-400 px-6 py-5 rounded-xl flex items-center gap-4 shadow-lg">
+        <i class="fa-solid fa-circle-check text-3xl"></i>
+        <div>
+            <p class="font-bold text-lg">Payment Successful!</p>
+            <p class="text-sm text-green-300">Your ebook has been downloaded automatically.</p>
+        </div>
+    </div>
 @endif
 
 
@@ -299,14 +496,41 @@ $reference = 'ebook_' . uniqid();
     </div>
 </section>
 
+<!-- Preview Modal -->
+<div id="previewModal">
+    <div class="preview-content">
+        <button onclick="closePreview()" class="absolute top-4 right-4 text-white text-2xl hover:text-accent transition">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <h3 class="font-serif text-2xl text-white mb-4">Book Preview</h3>
+        <div class="text-textGray mb-4">
+            <p class="mb-3">Get a glimpse of what's inside:</p>
+            <ul class="space-y-2">
+                <li><i class="fa-solid fa-check text-accent"></i> {{ $ebook->pages ?? 'Multiple' }} pages of inspiring content</li>
+                <li><i class="fa-solid fa-check text-accent"></i> Written by Pastor Livinus Nneji</li>
+                <li><i class="fa-solid fa-check text-accent"></i> {{ $ebook->category ?? 'Spiritual' }} teachings</li>
+                <li><i class="fa-solid fa-check text-accent"></i> Downloadable PDF format</li>
+            </ul>
+        </div>
+        <div class="bg-primary/50 p-4 rounded-lg border border-accent/20">
+            <p class="text-sm text-textGray italic">"{{ Str::limit($ebook->message, 150) }}"</p>
+        </div>
+        <button onclick="closePreview()" class="mt-6 w-full bg-accent text-white py-3 rounded-full font-bold uppercase hover:bg-accentDark transition">
+            Close Preview
+        </button>
+    </div>
+</div>
+
 
 @if(!$hasPaid)
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
-    
-document.getElementById('payBtn')?.addEventListener('click', function () {
+const payBtn = document.getElementById('payBtn');
+const callbackUrl = payBtn?.dataset.callbackUrl;
+
+payBtn?.addEventListener('click', function () {
     this.disabled = true;
-    this.innerText = 'Processing…';
+    this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing…';
 
     PaystackPop.setup({
         key: "{{ config('paystack.publicKey') }}",
@@ -314,21 +538,15 @@ document.getElementById('payBtn')?.addEventListener('click', function () {
         amount: {{ $ebook->price * 100 }},
         currency: "NGN",
         ref: "{{ $reference }}",
-        metadata: {
-            custom_fields: [
-                {
-                    display_name: "Ebook ID",
-                    variable_name: "ebook_id",
-                    value: "{{ $ebook->id }}"
-                }
-            ]
-        },
         callback: function (response) {
-            window.location.href =
-                "{{ route('ebooks.callback', $ebook->id) }}?reference=" + response.reference;
+            payBtn.innerHTML = '<i class="fa-solid fa-check"></i> Download Starting...';
+            setTimeout(() => {
+                window.location.href = callbackUrl + "?reference=" + response.reference;
+            }, 1000);
         },
         onClose: function () {
-            location.reload();
+            payBtn.disabled = false;
+            payBtn.innerHTML = '<i class="fa-solid fa-lock"></i> Pay & Download Now';
         }
     }).openIframe();
 });
@@ -424,8 +642,21 @@ function closeLightbox() {
 
 // Close with Escape key
 document.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape') closeLightbox();
+    if (event.key === 'Escape') {
+        closeLightbox();
+        closePreview();
+    }
 });
+
+function openPreview() {
+    document.getElementById('previewModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closePreview() {
+    document.getElementById('previewModal').classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
     </script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {

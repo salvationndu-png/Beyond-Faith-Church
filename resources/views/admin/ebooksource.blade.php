@@ -61,77 +61,7 @@
       <div class="layout-container">
         <!-- Menu -->
 
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-          <div class="app-brand demo">
-            <a href="index.html" class="app-brand-link">
-              <span class="app-brand-logo demo">
-             <h3  >BEYOND FAITH</h2>
-              </span>
-            </a>
-
-            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-              <i class="bx bx-chevron-left bx-sm align-middle"></i>
-            </a>
-          </div>
-
-          <div class="menu-inner-shadow"></div>
-
-          <ul class="menu-inner py-1">
-            <!-- Dashboard -->
-            <li class="menu-item ">
-              <a href="{{url('home')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                <div data-i18n="Analytics">Dashboard</div>
-              </a>
-            </li>
-
-            <!-- Components -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">Pages</span></li>
-            <!-- Cards -->
-            <li class="menu-item ">
-              <a href="{{url('events')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Basic">Events</div>
-              </a>
-            </li>
-            <!-- User interface -->
-            <li class="menu-item ">
-              <a href="{{url('messages')}}" class="menu-link ">
-                <i class="menu-icon tf-icons bx bx-box"></i>
-                <div data-i18n="User interface">Messages</div>
-              </a>
-             
-            </li>
-
-            <!-- Extended components -->
-            <li class="menu-item">
-              <a href="{{url('admingallery')}}" class="menu-link ">
-                <i class="menu-icon tf-icons bx bx-copy"></i>
-                <div data-i18n="Extended UI">Gallery</div>
-              </a>
-             
-            </li>
-
-            <li class="menu-item active">
-              <a href="{{url('ebooksource')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-crown"></i>
-                <div data-i18n="Boxicons">Ebooks</div>
-              </a>
-            </li>
-            <!-- Forms & Tables -->
-          
-            <!-- Tables -->
-            <li class="menu-item">
-              <a href="{{url('contacts')}}" class="menu-link">
-              <i class=' menu-icon bx bxs-inbox'></i>           
-                   <div data-i18n="Tables">Contacts</div>
-              </a>
-            </li>
-            <!-- Misc -->
-           
-          </ul>
-        </aside>
-        <!-- / Menu -->
+        @include('admin.partials.sidebar')
 
         <!-- Layout container -->
         <div class="layout-page">
@@ -254,6 +184,17 @@
                         
                             </div>
                             @endif
+
+          @if($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
+              </ul>
+            </div>
+          @endif
                             
                             <script>
                                 var alertList = document.querySelectorAll(".alert");
@@ -263,72 +204,204 @@
                             </script>
             <!-- Content -->
 
+            @include('admin.partials.breadcrumbs')
+            @include('admin.partials.ui-components')
+
  <div class="row">
   <div class="col-12">
-    <form action="{{ url('ebookupload') }}" enctype="multipart/form-data" method="post">
+    <form action="{{ url('ebookupload') }}" enctype="multipart/form-data" method="post" id="ebookForm">
       @csrf
-
       <div class="card">
         <h5 class="card-header">UPLOAD EBOOKS</h5>
-
         <div class="card-body demo-vertical-spacing demo-only-element">
+          @if($errors->any())
+            <div class="alert alert-danger alert-dismissible">
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              @foreach($errors->all() as $error)
+                <div><i class="bx bx-error-circle"></i> {{ $error }}</div>
+              @endforeach
+            </div>
+          @endif
 
-          <!-- Heading -->
           <div class="input-group mb-3">
             <label class="input-group-text">Heading</label>
-            <input type="text"
-                   class="form-control"
-                   name="header"
-                   required />
+            <input type="text" class="form-control" name="header" required />
           </div>
 
-          <!-- Cover Image -->
           <div class="input-group mb-3">
-            <label class="input-group-text">Pictures</label>
-            <input type="file"
-                   class="form-control"
-                   name="images"
-                   required />
+            <label class="input-group-text">Cover Image</label>
+            <input type="file" class="form-control" name="images" id="ebookCover" accept="image/jpeg,image/jpg,image/png,image/webp" required />
+          </div>
+          <div id="coverPreview" style="display:none;" class="mb-3">
+            <img id="coverImg" style="max-width:200px; max-height:200px; border-radius:8px; border:2px solid #ddd;" />
           </div>
 
+          <div class="mb-3">
+            <label class="form-label">Ebook (PDF only)</label>
+            <div id="pdfDropZone" style="border:2px dashed #ccc; border-radius:8px; padding:40px; text-align:center; cursor:pointer; transition:all 0.3s;">
+              <i class="bx bx-cloud-upload" style="font-size:48px; color:#999;"></i>
+              <p class="mb-0">Drag & drop PDF here or click to browse</p>
+              <small class="text-muted">Only PDF files accepted</small>
+            </div>
+            <input type="file" class="form-control d-none" name="pdf" id="ebookPdf" accept=".pdf,application/pdf" required />
+            <div id="pdfInfo" style="display:none;" class="mt-2 alert alert-info">
+              <i class="bx bx-file-blank"></i> <span id="pdfName"></span> (<span id="pdfSize"></span>)
+            </div>
+          </div>
 
-          <!-- Ebook File -->
           <div class="input-group mb-3">
-            <label class="input-group-text">Ebook (PDF)</label>
-            <input type="file"
-                   class="form-control"
-                   name="pdf"
-                   accept=".pdf"
-                   required />
-          </div>
-                    <div class="input-group mb-3">
             <label class="input-group-text">Price</label>
-            <input type="number"
-                   class="form-control"
-                   name="price"
-                   required />
+            <input type="number" class="form-control" name="price" required />
           </div>
 
-          <!-- EXTRA MESSAGE TEXTAREA -->
           <div class="input-group mb-3">
-            <textarea
-              class="form-control"
-              name="message"
-              rows="4"
-              placeholder="Extra message / description"
-              required
-            ></textarea>
+            <label class="input-group-text">Pages</label>
+            <input type="number" class="form-control" name="pages" placeholder="Number of pages" />
           </div>
 
-          <button class="btn btn-outline-primary" type="submit">
-            Save
-          </button>
+          <div class="input-group mb-3">
+            <label class="input-group-text">File Size</label>
+            <input type="text" class="form-control" name="file_size" placeholder="e.g., 2.5 MB" />
+          </div>
 
+          <div class="input-group mb-3">
+            <label class="input-group-text">Category</label>
+            <select class="form-control" name="category">
+              <option value="">Select Category</option>
+              <option value="Faith & Spirituality">Faith & Spirituality</option>
+              <option value="Prayer & Worship">Prayer & Worship</option>
+              <option value="Bible Study">Bible Study</option>
+              <option value="Christian Living">Christian Living</option>
+              <option value="Leadership">Leadership</option>
+              <option value="Family & Relationships">Family & Relationships</option>
+              <option value="Devotional">Devotional</option>
+            </select>
+          </div>
+
+          <div class="input-group mb-3">
+            <textarea class="form-control" name="message" rows="4" placeholder="Extra message / description" required></textarea>
+          </div>
+          
+          <div id="ebookProgress" style="display:none;" class="mt-3">
+            <div class="progress">
+              <div id="ebookProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%">0%</div>
+            </div>
+          </div>
+
+          <button class="btn btn-church-primary" type="submit" id="ebookSubmitBtn">Save</button>
         </div>
       </div>
     </form>
   </div>
 </div>
+
+<script>
+const ebookCover = document.getElementById('ebookCover');
+const coverPreview = document.getElementById('coverPreview');
+const coverImg = document.getElementById('coverImg');
+const ebookPdf = document.getElementById('ebookPdf');
+const pdfDropZone = document.getElementById('pdfDropZone');
+const pdfInfo = document.getElementById('pdfInfo');
+const pdfName = document.getElementById('pdfName');
+const pdfSize = document.getElementById('pdfSize');
+const ebookForm = document.getElementById('ebookForm');
+const ebookSubmitBtn = document.getElementById('ebookSubmitBtn');
+const ebookProgressBar = document.getElementById('ebookProgressBar');
+const ebookProgress = document.getElementById('ebookProgress');
+
+ebookCover.addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      coverImg.src = e.target.result;
+      coverPreview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+pdfDropZone.addEventListener('click', () => ebookPdf.click());
+
+pdfDropZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  pdfDropZone.style.borderColor = '#007bff';
+  pdfDropZone.style.backgroundColor = '#f0f8ff';
+});
+
+pdfDropZone.addEventListener('dragleave', () => {
+  pdfDropZone.style.borderColor = '#ccc';
+  pdfDropZone.style.backgroundColor = 'transparent';
+});
+
+pdfDropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  pdfDropZone.style.borderColor = '#ccc';
+  pdfDropZone.style.backgroundColor = 'transparent';
+  
+  const files = e.dataTransfer.files;
+  if (files.length > 0 && files[0].type === 'application/pdf') {
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(files[0]);
+    ebookPdf.files = dataTransfer.files;
+    showPdfInfo(files[0]);
+  }
+});
+
+ebookPdf.addEventListener('change', function(e) {
+  if (e.target.files.length > 0) {
+    showPdfInfo(e.target.files[0]);
+  }
+});
+
+function showPdfInfo(file) {
+  pdfName.textContent = file.name;
+  pdfSize.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+  pdfInfo.style.display = 'block';
+}
+
+ebookForm.addEventListener('submit', function(e) {
+  if (!this.checkValidity()) return;
+  e.preventDefault();
+  
+  ebookSubmitBtn.disabled = true;
+  ebookSubmitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Uploading...';
+  ebookProgress.style.display = 'block';
+  
+  const formData = new FormData(this);
+  const xhr = new XMLHttpRequest();
+  
+  xhr.upload.addEventListener('progress', function(e) {
+    if (e.lengthComputable) {
+      const percent = Math.round((e.loaded / e.total) * 100);
+      ebookProgressBar.style.width = percent + '%';
+      ebookProgressBar.textContent = percent + '%';
+    }
+  });
+  
+  xhr.addEventListener('load', function() {
+    if (xhr.status === 200) {
+      window.location.reload();
+    } else {
+      ebookSubmitBtn.disabled = false;
+      ebookSubmitBtn.innerHTML = 'Save';
+      ebookProgress.style.display = 'none';
+      alert('Upload failed. Please try again.');
+    }
+  });
+  
+  xhr.addEventListener('error', function() {
+    ebookSubmitBtn.disabled = false;
+    ebookSubmitBtn.innerHTML = 'Save';
+    ebookProgress.style.display = 'none';
+    alert('Upload failed. Please check your connection.');
+  });
+  
+  xhr.open('POST', '{{ url("ebookupload") }}');
+  xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('input[name="_token"]').value);
+  xhr.send(formData);
+});
+</script>
 
 
 
@@ -336,76 +409,69 @@
                     
                     </style>
                    <div class="container mt-5">
-    <h2 class="mb-4">Uploaded Ebooks</h2>
-
-    @if(session('success'))
-        <div class="position-fixed top-50 start-50 translate-middle p-3" style="z-index: 1055;">
-            <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="d-flex">
-                    <div class="toast-body">
-                        {{ session('success') }}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-            </div>
-        </div>
-        <script>
-            var toastEl = document.getElementById('successToast');
-            var toast = new bootstrap.Toast(toastEl);
-            toast.show();
-        </script>
-    @endif
-
-    @if($data->count() > 0)
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Header</th>
-                        <th>Thumbnail</th>
-                        <th>PDF</th>
-                        <th>Created At</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($data as $item)
-                        <tr>
-                            <td>{{ $item->header }}</td>
-                            <td>
-                                @if($item->images)
-                                    <img src="{{ asset($item->images) }}" alt="Thumbnail" style="height:80px; object-fit:cover;">
-                                @else
-                                    <span>No Image</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if($item->pdf)
-                                    <a href="{{ asset($item->pdf) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                        Download PDF
-                                    </a>
-                                @else
-                                    <span>No PDF</span>
-                                @endif
-                            </td>
-                            <td>{{ $item->created_at->format('d M Y H:i') }}</td>
-                            <td>
-                                <a href="{{ url('ebook_edit', $item->id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-
-                                  <a class="btn btn-sm btn-outline-danger"   onclick="return confirm('Are you sure you want to delete this ?');" href="{{ url('ebook_delete', $item->id) }}" title="Delete" >
-                                           <i class="bi bi-trash"></i >
-                                       </a>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
+    <div class="card">
+      <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+        <h5 class="mb-0">All Ebooks</h5>
+        <form method="GET" class="d-flex gap-2">
+          <input type="text" name="search" class="form-control form-control-sm" placeholder="Search ebooks..." value="{{ request('search') }}" style="min-width: 200px;">
+          <button type="submit" class="btn btn-sm btn-primary"><i class="bx bx-search"></i></button>
+          @if(request('search'))
+            <a href="{{ url('ebooksource') }}" class="btn btn-sm btn-secondary"><i class="bx bx-x"></i></a>
+          @endif
+        </form>
+      </div>
+      <div class="card-body">
+        @if($data->count() > 0)
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th><a href="?sort=header&order={{ request('sort') == 'header' && request('order') == 'asc' ? 'desc' : 'asc' }}{{ request('search') ? '&search='.request('search') : '' }}" class="text-decoration-none text-dark">Header @if(request('sort') == 'header')<i class="bx bx-{{ request('order') == 'asc' ? 'up' : 'down' }}-arrow"></i>@endif</a></th>
+                  <th class="d-none d-lg-table-cell">Thumbnail</th>
+                  <th class="d-none d-md-table-cell">PDF</th>
+                  <th class="d-none d-xl-table-cell"><a href="?sort=created_at&order={{ request('sort') == 'created_at' && request('order') == 'asc' ? 'desc' : 'asc' }}{{ request('search') ? '&search='.request('search') : '' }}" class="text-decoration-none text-dark">Created @if(request('sort') == 'created_at' || !request('sort'))<i class="bx bx-{{ request('order') == 'asc' ? 'up' : 'down' }}-arrow"></i>@endif</a></th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($data as $item)
+                  <tr>
+                    <td><strong>{{ $item->header }}</strong><div class="d-xl-none small text-muted">{{ $item->created_at->format('M d, Y') }}</div></td>
+                    <td class="d-none d-lg-table-cell">
+                      @if($item->images)
+                        <img src="{{ asset($item->images) }}" alt="Thumbnail" style="height:60px; width:auto; object-fit:cover;">
+                      @else
+                        <span>No Image</span>
+                      @endif
+                    </td>
+                    <td class="d-none d-md-table-cell">
+                      @if($item->pdf)
+                        <a href="{{ asset('ebooks/' . $item->pdf) }}" target="_blank" class="btn btn-sm btn-outline-primary">Download PDF</a>
+                      @else
+                        <span>No PDF</span>
+                      @endif
+                    </td>
+                    <td class="d-none d-xl-table-cell">{{ $item->created_at->format('d M Y H:i') }}</td>
+                    <td>
+                      <a href="{{ url('ebook_edit', $item->id) }}" class="btn btn-sm btn-church-primary" title="Edit"><i class="bi bi-pencil-square"></i></a>
+                      <a class="btn btn-sm btn-outline-danger" onclick="return confirmDelete('{{ url('ebook_delete', $item->id) }}');" href="#" title="Delete"><i class="bi bi-trash"></i></a>
+                    </td>
+                  </tr>
+                @endforeach
+              </tbody>
             </table>
-        </div>
-    @else
-        <p class="text-center">No ebooks uploaded yet.</p>
-    @endif
+          </div>
+          @if($data->hasPages())
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 gap-2">
+              <div class="text-muted small">Showing {{ $data->firstItem() }} to {{ $data->lastItem() }} of {{ $data->total() }} ebooks</div>
+              <nav>{{ $data->links('pagination::bootstrap-4') }}</nav>
+            </div>
+          @endif
+        @else
+          <p class="text-center text-muted py-4">@if(request('search'))No ebooks found matching "{{ request('search') }}"@else No ebooks uploaded yet @endif</p>
+        @endif
+      </div>
+    </div>
 </div>
 
 

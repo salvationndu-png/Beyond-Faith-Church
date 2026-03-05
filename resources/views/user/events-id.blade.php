@@ -126,7 +126,7 @@
     <nav class="fixed w-full z-50 bg-primary/80 backdrop-blur-md border-b border-white/5 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <div class="flex-shrink-0 cursor-pointer" onclick="switchPage('home')">
+                <a href="{{url('/')}}" class="flex-shrink-0">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center">
                              <i class="fa-solid fa-church text-lg text-white"></i>
@@ -136,14 +136,14 @@
                             <span class="text-[0.6rem] text-textGray tracking-[0.2em] uppercase">International</span>
                         </div>
                     </div>
-                </div>
+                </a>
                 
                 <div class="hidden md:flex space-x-8 text-xs font-bold tracking-widest uppercase text-textGray">
-                    <a href="{{url('/')}}" class="nav-link cursor-pointer hover:text-white transition-colors">Home</a>
-                    <a href="{{url('/#about-page')}}" class="nav-link cursor-pointer hover:text-white transition-colors">About Us</a>
-                    <a href="{{url('/#events-page')}}" class="nav-link cursor-pointer hover:text-white transition-colors">Events</a>
-                    <a href="{{url('/#media-page')}}" class="nav-link cursor-pointer hover:text-white transition-colors">Media</a>
-                    <a href="{{url('/#gallery-page')}}" class="nav-link cursor-pointer hover:text-white transition-colors">Gallery</a>
+                    <a href="{{url('/')}}" class="nav-link hover:text-white transition-colors">Home</a>
+                    <a href="{{url('/')}}#about-page" class="nav-link hover:text-white transition-colors">About Us</a>
+                    <a href="{{url('/')}}#events-page" class="nav-link hover:text-white transition-colors">Events</a>
+                    <a href="{{url('/')}}#media-page" class="nav-link hover:text-white transition-colors">Media</a>
+                    <a href="{{url('/')}}#gallery-page" class="nav-link hover:text-white transition-colors">Gallery</a>
                 </div>
 
                 <div class="hidden md:flex items-center gap-4">
@@ -164,11 +164,11 @@
         </button>
 
         <div class="flex flex-col gap-8 text-center">
-            <a href="{{url('/')}}"  class="text-2xl font-serif text-white hover:text-accent transition">Home</a>
-            <a href="{{url('/#about-page')}}"  class="text-2xl font-serif text-white hover:text-accent transition">About Us</a>
-            <a href="{{url('/#events-page')}}"  class="text-2xl font-serif text-white hover:text-accent transition">Events</a>
-            <a href="{{url('/#media-page')}}"  class="text-2xl font-serif text-white hover:text-accent transition">Media</a>
-            <a href="{{url('/#gallery-page')}}"  class="text-2xl font-serif text-white hover:text-accent transition">Gallery</a>
+            <a href="{{url('/')}}" class="text-2xl font-serif text-white hover:text-accent transition">Home</a>
+            <a href="{{url('/')}}#about-page" class="text-2xl font-serif text-white hover:text-accent transition">About Us</a>
+            <a href="{{url('/')}}#events-page" class="text-2xl font-serif text-white hover:text-accent transition">Events</a>
+            <a href="{{url('/')}}#media-page" class="text-2xl font-serif text-white hover:text-accent transition">Media</a>
+            <a href="{{url('/')}}#gallery-page" class="text-2xl font-serif text-white hover:text-accent transition">Gallery</a>
         </div>
 
         <div class="mt-auto mb-12 border-t border-white/10 pt-8 flex flex-col gap-6 items-center">
@@ -189,7 +189,7 @@
                 <img src="{{ asset('images/' . $data->image) }}" class="absolute inset-0 w-full h-full object-cover opacity-40">
                 <div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/50 to-transparent"></div>
                 <div class="relative z-10 max-w-7xl mx-auto px-6 w-full pb-12">
-                    <a href="{{ url('/#events-page') }}">
+                    <a href="{{ url('/') }}#events-page">
                     <button  class="text-textGray hover:text-white mb-6 text-[10px] font-bold uppercase tracking-widest transition flex items-center gap-2">
                         <i class="fa-solid fa-arrow-left"></i> Back to Events
                     </button>

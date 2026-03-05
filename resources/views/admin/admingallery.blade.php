@@ -61,78 +61,7 @@
       <div class="layout-container">
         <!-- Menu -->
 
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-          <div class="app-brand demo">
-            <a href="index.html" class="app-brand-link">
-              <span class="app-brand-logo demo">
-             <h3  >BEYOND FAITH</h2>
-              </span>
-            </a>
-
-            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-              <i class="bx bx-chevron-left bx-sm align-middle"></i>
-            </a>
-          </div>
-
-          <div class="menu-inner-shadow"></div>
-
-          <ul class="menu-inner py-1">
-            <!-- Dashboard -->
-            <li class="menu-item ">
-              <a href="{{url('home')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                <div data-i18n="Analytics">Dashboard</div>
-              </a>
-            </li>
-
-            <!-- Components -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">Pages</span></li>
-            <!-- Cards -->
-            <li class="menu-item ">
-              <a href="{{url('events')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Basic">Events</div>
-              </a>
-            </li>
-            <!-- User interface -->
-            <li class="menu-item ">
-              <a href="{{url('messages')}}" class="menu-link ">
-                <i class="menu-icon tf-icons bx bx-box"></i>
-                <div data-i18n="User interface">Messages</div>
-              </a>
-             
-            </li>
-
-            <!-- Extended components -->
-            <li class="menu-item active">
-              <a href="{{url('admingallery')}}" class="menu-link ">
-                <i class="menu-icon tf-icons bx bx-copy"></i>
-                <div data-i18n="Extended UI">Gallery</div>
-              </a>
-             
-            </li>
-
-            <li class="menu-item">
-              <a href="{{url('ebooksource')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-crown"></i>
-                <div data-i18n="Boxicons">Ebooks</div>
-              </a>
-            </li>
-
-            <!-- Forms & Tables -->
-          
-            <!-- Tables -->
-            <li class="menu-item">
-              <a href="{{url('contacts')}}" class="menu-link">
-              <i class=' menu-icon bx bxs-inbox'></i>           
-                   <div data-i18n="Tables">Contacts</div>
-              </a>
-            </li>
-            <!-- Misc -->
-           
-          </ul>
-        </aside>
-        <!-- / Menu -->
+        @include('admin.partials.sidebar')
 
         <!-- Layout container -->
         <div class="layout-page">
@@ -241,55 +170,126 @@
           <!-- Content wrapper -->
           <div class="content-wrapper  p-4">
             <!-- Content -->
+            @include('admin.partials.breadcrumbs')
+            @include('admin.partials.ui-components')
 
             <div class="row">
                 <div class="col-12">
-<form action="{{ url('/gallery_upload') }}"
-      method="post"
-      enctype="multipart/form-data">
-
+<form action="{{ url('/gallery_upload') }}" method="post" enctype="multipart/form-data" id="galleryForm">
     @csrf
-
     <div class="card">
         <h5 class="card-header">GALLERY FORM</h5>
-
         <div class="card-body demo-vertical-spacing demo-only-element">
+            @if($errors->any())
+              <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                @foreach($errors->all() as $error)
+                  <div><i class="bx bx-error-circle"></i> {{ $error }}</div>
+                @endforeach
+              </div>
+            @endif
 
             <div class="input-group mb-3">
-                <label class="input-group-text" for="galleryHeader">Heading</label>
-                <input type="text"
-                       class="form-control"
-                       name="header"
-                       id="galleryHeader"
-                       required>
+                <label class="input-group-text">Heading</label>
+                <input type="text" class="form-control" name="header" required>
             </div>
 
             <div class="input-group mb-3">
-                <label class="input-group-text" for="gallerySubject">Subject</label>
-                <input type="text"
-                       class="form-control"
-                       name="subject"
-                       id="gallerySubject"
-                       required>
+                <label class="input-group-text">Subject</label>
+                <input type="text" class="form-control" name="subject" required>
             </div>
 
             <div class="input-group mb-3">
-                <label class="input-group-text" for="galleryImages">Pictures</label>
-                <input type="file"
-                       class="form-control"
-                       name="images[]"
-                       id="galleryImages"
-                       multiple
-                       accept="image/*"
-                       required>
+                <label class="input-group-text">Pictures</label>
+                <input type="file" class="form-control" name="images[]" id="galleryImages" multiple accept="image/jpeg,image/jpg,image/png,image/webp" required>
+            </div>
+            <div id="galleryPreview" class="mb-3" style="display:none;">
+              <div id="previewContainer" class="d-flex flex-wrap gap-2"></div>
             </div>
 
-            <button class="btn btn-outline-primary" type="submit">
-                Save
-            </button>
+            <div id="galleryProgress" style="display:none;" class="mt-3">
+              <div class="progress">
+                <div id="galleryProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%">0%</div>
+              </div>
+            </div>
+
+            <button class="btn btn-church-primary" type="submit" id="gallerySubmitBtn">Save</button>
         </div>
     </div>
 </form>
+
+<script>
+const galleryImages = document.getElementById('galleryImages');
+const galleryPreview = document.getElementById('galleryPreview');
+const previewContainer = document.getElementById('previewContainer');
+const galleryForm = document.getElementById('galleryForm');
+const gallerySubmitBtn = document.getElementById('gallerySubmitBtn');
+const galleryProgressBar = document.getElementById('galleryProgressBar');
+const galleryProgress = document.getElementById('galleryProgress');
+
+galleryImages.addEventListener('change', function(e) {
+  previewContainer.innerHTML = '';
+  const files = Array.from(e.target.files);
+  
+  if (files.length > 0) {
+    files.forEach(file => {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.style.cssText = 'width:100px; height:100px; object-fit:cover; border-radius:8px; border:2px solid #ddd;';
+          previewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    galleryPreview.style.display = 'block';
+  }
+});
+
+galleryForm.addEventListener('submit', function(e) {
+  if (!this.checkValidity()) return;
+  e.preventDefault();
+  
+  gallerySubmitBtn.disabled = true;
+  gallerySubmitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Uploading...';
+  galleryProgress.style.display = 'block';
+  
+  const formData = new FormData(this);
+  const xhr = new XMLHttpRequest();
+  
+  xhr.upload.addEventListener('progress', function(e) {
+    if (e.lengthComputable) {
+      const percent = Math.round((e.loaded / e.total) * 100);
+      galleryProgressBar.style.width = percent + '%';
+      galleryProgressBar.textContent = percent + '%';
+    }
+  });
+  
+  xhr.addEventListener('load', function() {
+    if (xhr.status === 200) {
+      window.location.reload();
+    } else {
+      gallerySubmitBtn.disabled = false;
+      gallerySubmitBtn.innerHTML = 'Save';
+      galleryProgress.style.display = 'none';
+      alert('Upload failed. Please try again.');
+    }
+  });
+  
+  xhr.addEventListener('error', function() {
+    gallerySubmitBtn.disabled = false;
+    gallerySubmitBtn.innerHTML = 'Save';
+    galleryProgress.style.display = 'none';
+    alert('Upload failed. Please check your connection.');
+  });
+  
+  xhr.open('POST', '{{ url("/gallery_upload") }}');
+  xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('input[name="_token"]').value);
+  xhr.send(formData);
+});
+</script>
 
 
                 </div>  
@@ -311,57 +311,65 @@
                     </style>
 
 
-<div class="container">
-    <h2 class="mb-4">Gallery</h2>
-
-    @forelse($data as $header => $items)
-        <div class="mb-5">
-            <h3 class="mb-3">{{ $header }}</h3>
-            
-            <div class="table-responsive"> <!-- makes table scrollable on small screens -->
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Subject</th>
-                            <th>Images</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($items as $item)
-                            <tr>
-                                <td>{{ $item->subject }}</td>
-                                <td>
-                                    @if($item->images)
-                                        @foreach($item->images as $image)
-                                            <img src="{{ asset($image) }}" 
-                                                 alt="image" 
-                                                 class="gallery-thumb">
-                                        @endforeach
-                                    @else
-                                        <span>No images</span>
-                                    @endif
-                                </td>
-                                <td>{{ $item->created_at->format('d M Y H:i') }}</td>
-                                <td>
-                                    <a href="{{ url('gallery_id', $item->id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
-                                        <i class="bi bi-pencil-square"></i></a>
-                                    <a class="btn btn-sm btn-outline-danger"   onclick="return confirm('Are you sure you want to delete this ?');" href="{{ url('gallery_delete', $item->id) }}" title="Delete" >
-                                           <i class="bi bi-trash"></i >
-                                       </a>
-                                
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div> <!-- /.table-responsive -->
-            
+<div class="container mt-5">
+    <div class="card">
+      <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+        <h5 class="mb-0">All Gallery Items</h5>
+        <form method="GET" class="d-flex gap-2">
+          <input type="text" name="search" class="form-control form-control-sm" placeholder="Search gallery..." value="{{ request('search') }}" style="min-width: 200px;">
+          <button type="submit" class="btn btn-sm btn-primary"><i class="bx bx-search"></i></button>
+          @if(request('search'))
+            <a href="{{ url('admingallery') }}" class="btn btn-sm btn-secondary"><i class="bx bx-x"></i></a>
+          @endif
+        </form>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th><a href="?sort=header&order={{ request('sort') == 'header' && request('order') == 'asc' ? 'desc' : 'asc' }}{{ request('search') ? '&search='.request('search') : '' }}" class="text-decoration-none text-dark">Header @if(request('sort') == 'header')<i class="bx bx-{{ request('order') == 'asc' ? 'up' : 'down' }}-arrow"></i>@endif</a></th>
+                <th><a href="?sort=subject&order={{ request('sort') == 'subject' && request('order') == 'asc' ? 'desc' : 'asc' }}{{ request('search') ? '&search='.request('search') : '' }}" class="text-decoration-none text-dark">Subject @if(request('sort') == 'subject')<i class="bx bx-{{ request('order') == 'asc' ? 'up' : 'down' }}-arrow"></i>@endif</a></th>
+                <th class="d-none d-lg-table-cell">Images</th>
+                <th class="d-none d-md-table-cell"><a href="?sort=created_at&order={{ request('sort') == 'created_at' && request('order') == 'asc' ? 'desc' : 'asc' }}{{ request('search') ? '&search='.request('search') : '' }}" class="text-decoration-none text-dark">Created @if(request('sort') == 'created_at' || !request('sort'))<i class="bx bx-{{ request('order') == 'asc' ? 'up' : 'down' }}-arrow"></i>@endif</a></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($data as $item)
+                <tr>
+                  <td><strong>{{ $item->header }}</strong></td>
+                  <td>{{ $item->subject }}</td>
+                  <td class="d-none d-lg-table-cell">
+                    @if($item->images)
+                      @foreach(array_slice($item->images, 0, 3) as $image)
+                        <img src="{{ asset($image) }}" alt="image" class="gallery-thumb">
+                      @endforeach
+                      @if(count($item->images) > 3)<span class="badge bg-secondary">+{{ count($item->images) - 3 }}</span>@endif
+                    @else
+                      <span>No images</span>
+                    @endif
+                  </td>
+                  <td class="d-none d-md-table-cell">{{ $item->created_at->format('d M Y H:i') }}</td>
+                  <td>
+                    <a href="{{ url('gallery_id', $item->id) }}" class="btn btn-sm btn-church-primary" title="Edit"><i class="bi bi-pencil-square"></i></a>
+                    <a class="btn btn-sm btn-outline-danger" onclick="return confirmDelete('{{ url('gallery_delete', $item->id) }}');" href="#" title="Delete"><i class="bi bi-trash"></i></a>
+                  </td>
+                </tr>
+              @empty
+                <tr><td colspan="5" class="text-center text-muted py-4">@if(request('search'))No gallery items found matching "{{ request('search') }}"@else No gallery items yet @endif</td></tr>
+              @endforelse
+            </tbody>
+          </table>
         </div>
-    @empty
-        <p>No gallery items yet.</p>
-    @endforelse
+        @if($data->hasPages())
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 gap-2">
+            <div class="text-muted small">Showing {{ $data->firstItem() }} to {{ $data->lastItem() }} of {{ $data->total() }} items</div>
+            <nav>{{ $data->links('pagination::bootstrap-4') }}</nav>
+          </div>
+        @endif
+      </div>
+    </div>
 </div>
 
 @if(session('success'))
